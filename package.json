@@ -10,6 +10,7 @@
   "main": "index",
   "author": "Ilya Koshaleu",
   "dependencies": {
-    "report-portal-client": "5.1.0"
+    "lodash": "^4.17.11",
+    "reportportal-client": "^5.1.0"
   }
 }
