@@ -1,0 +1,17 @@
+{
+  "name": "newman-reporter-reportportal",
+  "version": "0.0.1",
+  "description": "Reportportal reporter for newman",
+  "keywords": [
+    "postman",
+    "newman",
+    "epam"
+  ],
+  "main": "index",
+  "author": "Ilya Koshaleu",
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "reportportal-client": "^5.1.0",
+    "string_decoder": "^1.2.0"
+  }
+}
