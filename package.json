@@ -9,9 +9,16 @@
   ],
   "main": "index",
   "author": "Ilya Koshaleu",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint ./lib --quiet --fix"
+  },
   "dependencies": {
     "lodash": "^4.17.11",
     "reportportal-client": "^5.1.0",
     "string_decoder": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.1"
   }
 }
