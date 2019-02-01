@@ -16,12 +16,12 @@ There are two ways to enable this reporter - with command line or programmatical
 To enable this reporter you have to specify `reportportal` in Newman's `-r` or `--reporters` option.
 
 ```console
-$ newman run https://postman-echo.com/status/200 -r reportportal
---reporter-reportportal-debug=true
---reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1
---reporter-reportportal-token=00000000-0000-0000-0000-000000000000
---reporter-reportportal-launch=LAUNCH_NAME
---reporter-reportportal-project=PROJECT_NAME
+$ newman run https://postman-echo.com/status/200 -r reportportal \
+    --reporter-reportportal-debug=true \
+    --reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1 \
+    --reporter-reportportal-token=00000000-0000-0000-0000-000000000000
+    --reporter-reportportal-launch=LAUNCH_NAME \
+    --reporter-reportportal-project=PROJECT_NAME
 ```
 
 #### Programmatically
