@@ -14,6 +14,7 @@
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
         "for-direction": "error",
-        "getter-return": "error"
+        "getter-return": "error",
+        "no-console": "off"
     }
 }
