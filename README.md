@@ -68,6 +68,4 @@ Licensed under the [Apache License v2.0](LICENSE)
 # Contribution and Support
 
 <img src="img/ahold-delhaize-logo-green.jpg" width="250">
-Implemented and supported by Ahold Delheize
-
-
+**Implemented and supported by Ahold Delheize**
