@@ -3,7 +3,7 @@ Newman runtime reporter for [EPAM report portal](https://github.com/reportportal
 
 ## Install
 
-The installation should be global if newman is installed globally, otherwise - local. (replace -g from the command below with -S for a local installation)
+The installation should be global if newman is installed globally, otherwise - local (replace -g from the command below with -S for a local installation).
 
 ```console
 $ npm install -g newman-reporter-reportportal
@@ -22,7 +22,10 @@ $ newman run https://postman-echo.com/status/200 -r reportportal \
     --reporter-reportportal-token=00000000-0000-0000-0000-000000000000 \
     --reporter-reportportal-launch=LAUNCH_NAME \
     --reporter-reportportal-project=PROJECT_NAME
+    -x
 ```
+
+Pay attention that you **must** add **-x** or **--suppress-exit-code** parameter while running newman using CLI.
 
 #### Programmatically
 
