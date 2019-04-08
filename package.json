@@ -20,12 +20,12 @@
   },
   "dependencies": {
     "lodash": "^4.17.11",
-    "reportportal-client": "^5.1.0",
+    "reportportal-client": "^5.2.1",
     "string_decoder": "^1.2.0"
   },
   "devDependencies": {
-    "eslint": "^5.12.1",
-    "eslint-plugin-jsdoc": "^4.1.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-jsdoc": "^4.8.1",
     "eslint-plugin-lodash": "^5.1.0"
   },
   "bugs": {

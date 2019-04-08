@@ -7,7 +7,7 @@ Newman runtime reporter for [EPAM report portal](https://github.com/reportportal
 The installation should be global if newman is installed globally, otherwise - local (replace -g from the command below with -S for a local installation).
 
 ```console
-$ npm install -g newman-reporter-reportportal
+$ npm install -g @reportportal/newman-reporter-reportportal
 ```
 
 ## Usage
@@ -38,9 +38,9 @@ const newman = require("newman");
 newman.run(
     {
         collection: "./collections/newman-test_collection.json",
-        reporters: "reportportal",
+        reporters: "@reportportal/reportportal",
         reporter: {
-            reportportal: {
+            "@reportportal/reportportal": {
                 debug: true,
                 endpoint: "http://your-instance.com:8080/api/v1",
                 token: "00000000-0000-0000-0000-000000000000",
@@ -92,7 +92,7 @@ $ docker pull reportportal/newman
 Run newman commands on the image:
 
 ```console
-$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda -r reportportal \
+$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda -r @reportportal/reportportal \
     --reporter-reportportal-debug=true \
     --reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1 \
     --reporter-reportportal-token=00000000-0000-0000-0000-000000000000 \
@@ -104,7 +104,7 @@ $ docker run -t reportportal/newman run https://www.getpostman.com/collections/8
 If you want to use this reporter for a specific collection JSON file, you have to mount a directory with this file:
 
 ```console
-$ docker run -v ~/collections:/etc/newman -t reportportal/newman run "example_postman-collection.json" -r reportportal \
+$ docker run -v ~/collections:/etc/newman -t reportportal/newman run "example_postman-collection.json" -r @reportportal/reportportal \
     --reporter-reportportal-debug=true \
     --reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1 \
     --reporter-reportportal-token=00000000-0000-0000-0000-000000000000 \
@@ -136,7 +136,7 @@ $ docker build -t reportportal/newman --build-arg VERSION="full semver version".
 Run a collection using the newman image:
 
 ```console
-$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda -r reportportal \
+$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda -r @reportportal/reportportal \
     --reporter-reportportal-debug=true \
     --reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1 \
     --reporter-reportportal-token=00000000-0000-0000-0000-000000000000 \
