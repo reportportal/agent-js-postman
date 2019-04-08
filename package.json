@@ -1,6 +1,6 @@
 {
   "name": "@reportportal/newman-reporter-reportportal",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Reportportal reporter for newman",
   "keywords": [
     "postman",
