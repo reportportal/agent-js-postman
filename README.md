@@ -19,12 +19,13 @@ There are two ways to enable this reporter - with command line or programmatical
 To enable this reporter you have to specify `reportportal` in Newman's `-r` or `--reporters` option.
 
 ```console
-$ newman run https://postman-echo.com/status/200 -r reportportal \
-    --reporter-reportportal-debug=true \
-    --reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-reportportal-launch=LAUNCH_NAME \
-    --reporter-reportportal-project=PROJECT_NAME
+$ newman run https://postman-echo.com/status/200 \
+    -r @reportportal/reportportal \
+    --reporter-@reportportal/reportportal-debug=true \
+    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
+    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
+    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
+    --reporter-@reportportal/reportportal-project=PROJECT_NAME
     -x
 ```
 
@@ -92,24 +93,26 @@ $ docker pull reportportal/newman
 Run newman commands on the image:
 
 ```console
-$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda -r @reportportal/reportportal \
-    --reporter-reportportal-debug=true \
-    --reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-reportportal-launch=LAUNCH_NAME \
-    --reporter-reportportal-project=PROJECT_NAME
+$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda \
+    -r @reportportal/reportportal \
+    --reporter-@reportportal/reportportal-debug=true \
+    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
+    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
+    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
+    --reporter-@reportportal/reportportal-project=PROJECT_NAME
     -x
 ```
 
 If you want to use this reporter for a specific collection JSON file, you have to mount a directory with this file:
 
 ```console
-$ docker run -v ~/collections:/etc/newman -t reportportal/newman run "example_postman-collection.json" -r @reportportal/reportportal \
-    --reporter-reportportal-debug=true \
-    --reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-reportportal-launch=LAUNCH_NAME \
-    --reporter-reportportal-project=PROJECT_NAME
+$ docker run -v ~/collections:/etc/newman -t reportportal/newman run "example_postman-collection.json" \
+    -r @reportportal/reportportal \
+    --reporter-@reportportal/reportportal-debug=true \
+    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
+    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
+    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
+    --reporter-@reportportal/reportportal-project=PROJECT_NAME
     -x
 ```
 
@@ -136,12 +139,13 @@ $ docker build -t reportportal/newman --build-arg VERSION="full semver version".
 Run a collection using the newman image:
 
 ```console
-$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda -r @reportportal/reportportal \
-    --reporter-reportportal-debug=true \
-    --reporter-reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-reportportal-launch=LAUNCH_NAME \
-    --reporter-reportportal-project=PROJECT_NAME
+$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda \
+    -r @reportportal/reportportal \
+    --reporter-@reportportal/reportportal-debug=true \
+    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
+    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
+    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
+    --reporter-@reportportal/reportportal-project=PROJECT_NAME
     -x
 ```
 
