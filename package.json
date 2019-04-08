@@ -1,6 +1,6 @@
 {
-  "name": "newman-reporter-reportportal",
-  "version": "0.0.18",
+  "name": "@reportportal/newman-reporter-reportportal",
+  "version": "0.0.19",
   "description": "Reportportal reporter for newman",
   "keywords": [
     "postman",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/reportportal/agent-postman"
+    "url": "git+https://github.com/reportportal/agent-postman.git"
   },
   "dependencies": {
     "lodash": "^4.17.11",
@@ -27,5 +27,11 @@
     "eslint": "^5.12.1",
     "eslint-plugin-jsdoc": "^4.1.0",
     "eslint-plugin-lodash": "^5.1.0"
+  },
+  "bugs": {
+    "url": "https://github.com/reportportal/agent-postman/issues"
+  },
+  "directories": {
+    "lib": "lib"
   }
 }
