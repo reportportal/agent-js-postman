@@ -19,8 +19,8 @@
     "url": "git+https://github.com/reportportal/agent-postman.git"
   },
   "dependencies": {
-    "lodash": "^4.17.11",
-    "reportportal-client": "^5.2.1",
+    "lodash": "^4.17.15",
+    "reportportal-client": "^5.2.2",
     "string_decoder": "^1.2.0"
   },
   "devDependencies": {
