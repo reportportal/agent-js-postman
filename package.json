@@ -1,13 +1,13 @@
 {
-  "name": "@abhijoseph/newman-reporter-reportportal",
-  "version": "0.0.25",
+  "name": "@reportportal/newman-reporter-reportportal",
+  "version": "0.0.22",
   "description": "Reportportal reporter for newman",
   "keywords": [
     "postman",
     "newman",
     "epam"
   ],
-  "homepage": "https://github.com/abhilashjoseph/agent-postman",
+  "homepage": "https://github.com/reportportal/agent-postman",
   "main": "index",
   "author": "Ilya Koshaleu",
   "license": "Apache-2.0",
@@ -16,11 +16,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abhilashjoseph/agent-postman.git"
+    "url": "git+https://github.com/reportportal/agent-postman.git"
   },
   "dependencies": {
     "lodash": "^4.17.15",
-    "@abhijoseph/reportportal-client": "^5.2.4",
+    "reportportal-client": "^5.2.3",
     "string_decoder": "^1.2.0"
   },
   "devDependencies": {
