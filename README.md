@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/reportportal/agent-postman.svg?branch=master)](https://travis-ci.org/reportportal/agent-postman)[![Code Coverage](https://codecov.io/gh/reportportal/agent-postman/branch/master/graph/badge.svg)](https://codecov.io/gh/reportportal/agent-postman)
 [![npm version](https://badge.fury.io/js/newman-reporter-reportportal.svg)](https://badge.fury.io/js/newman-reporter-reportportal)
 
 # newman-reporter-reportportal
