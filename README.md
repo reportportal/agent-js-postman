@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/newman-reporter-reportportal.svg)](https://badge.fury.io/js/newman-reporter-reportportal)
+
 # newman-reporter-reportportal
 
 Newman runtime reporter for [EPAM report portal](https://github.com/reportportal/reportportal) which provides information about collection run.
