@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.15",
-    "reportportal-client": "^5.2.3",
+    "@reportportal/client-javascript": "^5.0.0",
     "string_decoder": "^1.2.0"
   },
   "devDependencies": {

@@ -1,0 +1,15 @@
+{
+  "name": "agent-postman-test",
+  "version": "0.0.1",
+  "description": "agent-postman-tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@reportportal/newman-reporter-reportportal": "file:../../agent-postman",
+    "newman": "^4.5.5"
+  }
+}
