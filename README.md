@@ -29,6 +29,7 @@ $ newman run https://postman-echo.com/status/200 \
     --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
     --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
     --reporter-@reportportal/reportportal-project=PROJECT_NAME \
+    --reporter-@reportportal/reportportal-description=LAUNCH_DESCRIPTION \
     -x
 ```
 
@@ -49,7 +50,8 @@ newman.run(
                 endpoint: "http://your-instance.com:8080/api/v1",
                 token: "00000000-0000-0000-0000-000000000000",
                 launch: "LAUNCH_NAME",
-                project: "PROJECT_NAME"
+                project: "PROJECT_NAME",
+                description: "LAUNCH_DESCRIPTION"
             }
         }
     },
@@ -68,10 +70,13 @@ Both CLI and programmatic runs support following options:
 
 | Parameter | Description                                                                                                       |
 | --------- | ----------------------------------------------------------------------------------------------------------------- |
-| token     | User's Report Portal toke from which you want to send requests. It can be found on the profile page of this user. |
+| token     | User's Report Portal token from which you want to send requests. It can be found on the profile page of this user. |
 | endpoint  | URL of your server. For example 'https://server:8080/api/v1'.                                                     |
 | launch    | Name of launch at creation.                                                                                       |
-| project   | The name of the project in which the launches will be created.                                                    |
+| project   | The name of the project in which the launches will be created.                                                      |
+| description   | Text description of launch.                                                                                     |
+| rerun     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                  |
+| rerunOf   | UUID of launch you want to rerun. If not specified, report portal will update the latest launch with the same name.                                                                                     |
 | debug     | Determines whether newman's run should be logged in details.                                                      |
 
 ## Docker

@@ -1,0 +1,141 @@
+{
+	"info": {
+		"_postman_id": "03bbd020-3204-4029-9b39-cda52734d51e",
+		"name": "Test",
+		"description": "Description for the launch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Suite request one",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c96cd5ba-725e-4ffe-8436-d4c3b1329229",
+						"exec": [
+							"pm.test(\"Test, status code is 200\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "261099b0-0024-4323-8ea2-c09d390176ee",
+						"exec": [
+							"pm.environment.set(\"testKey\", \"testValue\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://learn.javascript.ru?attr=1234",
+					"protocol": "https",
+					"host": [
+						"learn",
+						"javascript",
+						"ru"
+					],
+					"query": [
+						{
+							"key": "attr",
+							"value": "1234"
+						}
+					]
+				},
+				"description": "Test request one"
+			},
+			"response": []
+		},
+		{
+			"name": "Suite request two",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "450bae43-f23c-4ec5-8172-c0e9cd9c1aa4",
+						"exec": [
+							"tests[\"Test, status code is 200\"] = responseCode.code === 200; \r",
+							"tests[\"Test, status code is 201\"] = responseCode.code === 200;\r",
+							"                   \r",
+							"// deliberate AssertionError to test proper JUnit report generation\",\r",
+							"pm.test(\"Test, status code is 400\", function () {\r",
+							"    console.log('Hello');  \r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9defd7f0-29c8-4bdf-871d-e0a3b270e1d5",
+						"exec": [
+							"pm.environment.set(\"testKey\", \"testValue\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					]
+				},
+				"description": "Test request two"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1b0a511d-3371-45f5-a55b-6cc4d66a2b35",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "faaa4c26-9756-4c26-a3c5-e85784b8f9cc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "36c7421c-6ceb-493c-9f47-fbab270a62b4",
+			"key": "keyOne",
+			"value": "valueOne",
+			"type": "string"
+		},
+		{
+			"id": "1ab7e28e-015c-4c45-b143-b5fbc3715494",
+			"key": "keyTwo",
+			"value": "valueTwo",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
