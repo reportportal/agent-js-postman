@@ -68,7 +68,6 @@
         "no-case-declarations": "error",
         "no-div-regex": "error",
         "no-else-return": "error",
-        "no-empty-function": "error",
         "no-empty-pattern": "error",
         "no-eq-null": "error",
         "no-eval": "error",
@@ -129,8 +128,6 @@
         "no-restricted-globals": "error",
         "no-shadow": "off",
         "no-shadow-restricted-names": "error",
-        "no-undef": "error",
-        "no-undef-init": "error",
         "no-undefined": "off",
         "no-unused-vars": "error",
 
@@ -270,29 +267,9 @@
         "object-curly-newline": "off",
         "object-curly-spacing": ["error", "always"],
         "object-property-newline": "off",
-        "one-var": ["error", "consecutive"],
-        "one-var-declaration-per-line": "error",
         "operator-assignment": "error",
         "operator-linebreak": ["error", "after"],
         "padded-blocks": ["error", "never"],
-        "padding-line-between-statements": [
-            "error",
-            {
-                "blankLine": "always",
-                "prev": "*",
-                "next": "return"
-            },
-            {
-                "blankLine": "always",
-                "prev": ["const", "let", "var"],
-                "next": "*"
-            },
-            {
-                "blankLine": "any",
-                "prev": ["const", "let", "var"],
-                "next": ["const", "let", "var"]
-            }
-        ],
         "quote-props": ["error", "as-needed"],
         "quotes": ["error", "single"],
         "require-jsdoc": "warn",
