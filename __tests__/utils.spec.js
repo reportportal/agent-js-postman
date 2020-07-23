@@ -77,8 +77,8 @@ describe('utils', () => {
                 members: [
                     {
                         id: 'id',
-                        key: 'keyOne',
-                        value: 'valueOne',
+                        key: 'rp.attributes',
+                        value: 'keyOne:valueOne',
                         type: 'string'
                     },
                     {
@@ -93,16 +93,52 @@ describe('utils', () => {
                 {
                     key: 'keyOne',
                     value: 'valueOne'
-                },
-                {
-                    key: 'keyTwo',
-                    value: 'valueTwo'
                 }
             ];
 
             const attributes = utils.getAttributes(variables);
 
             expect(attributes).toEqual(expectedAttributes);
+        });
+
+        test('should return correct array of attributes, key should be null', () => {
+            const variables = {
+                members: [
+                    {
+                        id: 'id',
+                        key: 'rp.attributes',
+                        value: 'valueOne',
+                        type: 'string'
+                    }
+                ]
+            };
+            const expectedAttributes = [
+                {
+                    key: null,
+                    value: 'valueOne'
+                }
+            ];
+
+            const attributes = utils.getAttributes(variables);
+
+            expect(attributes).toEqual(expectedAttributes);
+        });
+
+        test('should return empty array of attributes, if there is no match with rp.attributes namespace', () => {
+            const variables = {
+                members: [
+                    {
+                        id: 'id',
+                        key: 'KeyOne',
+                        value: 'valueOne',
+                        type: 'string'
+                    }
+                ]
+            };
+
+            const attributes = utils.getAttributes(variables);
+
+            expect(attributes).toEqual([]);
         });
     });
 

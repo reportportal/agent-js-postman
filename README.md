@@ -157,6 +157,20 @@ $ docker run -t reportportal/newman run https://www.getpostman.com/collections/8
     -x
 ```
 
+## Report static attributes
+To report attributes for tests you should use the next method
+
+**pm.environment.set**
+
+Parameter | Required | Description | Examples
+--------- | ----------- | ----------- | -----------
+namespace | true | "string" - namespace, must be equal to the *rp.attributes* | "rp.attributes"
+attributes | true | "string" - contains set of pairs *key:value* | "keyOne:valueOne;valueTwo;keyThree:valueThree"
+
+```javascript
+pm.environment.set("rp.attributes", "keyOne:valueOne;valueTwo;keyThree:valueThree");
+```
+
 # Copyright Notice
 
 Licensed under the [Apache License v2.0](LICENSE)

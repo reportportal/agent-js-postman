@@ -7,6 +7,11 @@
 	},
 	"item": [
 		{
+			"name": "Suite",
+			"item": [],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Suite request one",
 			"event": [
 				{
@@ -62,12 +67,9 @@
 					"script": {
 						"id": "450bae43-f23c-4ec5-8172-c0e9cd9c1aa4",
 						"exec": [
-							"tests[\"Test, status code is 200\"] = responseCode.code === 200; \r",
-							"tests[\"Test, status code is 201\"] = responseCode.code === 200;\r",
-							"                   \r",
 							"// deliberate AssertionError to test proper JUnit report generation\",\r",
 							"pm.test(\"Test, status code is 400\", function () {\r",
-							"    console.log('Hello');  \r",
+							"    console.log('Hello');\r",
 							"    pm.response.to.have.status(400);\r",
 							"});"
 						],
@@ -79,7 +81,7 @@
 					"script": {
 						"id": "9defd7f0-29c8-4bdf-871d-e0a3b270e1d5",
 						"exec": [
-							"pm.environment.set(\"testKey\", \"testValue\");"
+							"pm.environment.set(\"rp.attributes\", \"testKey:testValue;testtwoValue\");"
 						],
 						"type": "text/javascript"
 					}
@@ -89,10 +91,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://postman-echo.com",
+					"raw": "https://ghgvhgvhgvhpostman-echo.com",
 					"protocol": "https",
 					"host": [
-						"postman-echo",
+						"ghgvhgvhgvhpostman-echo",
 						"com"
 					]
 				},
@@ -125,16 +127,14 @@
 	],
 	"variable": [
 		{
-			"id": "36c7421c-6ceb-493c-9f47-fbab270a62b4",
-			"key": "keyOne",
-			"value": "valueOne",
-			"type": "string"
+			"id": "d3006890-0642-434f-ba29-1907bdabefa3",
+			"key": "rp.attributes",
+			"value": "keyOne:valueOne"
 		},
 		{
-			"id": "1ab7e28e-015c-4c45-b143-b5fbc3715494",
-			"key": "keyTwo",
-			"value": "valueTwo",
-			"type": "string"
+			"id": "7abc2119-c2b9-4981-8407-498a1c3d2006",
+			"key": "additional",
+			"value": "key"
 		}
 	],
 	"protocolProfileBehavior": {}
