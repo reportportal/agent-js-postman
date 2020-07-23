@@ -6,7 +6,6 @@ newman.run(
         reporters: '@reportportal/reportportal',
         reporter: {
             '@reportportal/reportportal': {
-                debug: true,
                 endpoint: 'http://dev.epm-rpp.projects.epam.com:8080/api/v1',
                 token: '',
                 launch: 'postman',
