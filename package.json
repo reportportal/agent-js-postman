@@ -12,6 +12,8 @@
   "author": "Ilya Koshaleu",
   "license": "Apache-2.0",
   "scripts": {
+    "test": "jest --detectOpenHandles --config ./jest.config.js",
+    "test:coverage": "jest --coverage",
     "lint": "eslint ./lib --quiet --fix"
   },
   "repository": {
@@ -26,7 +28,8 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-plugin-jsdoc": "^4.8.1",
-    "eslint-plugin-lodash": "^5.1.0"
+    "eslint-plugin-lodash": "^5.1.0",
+    "jest": "^25.3.0"
   },
   "bugs": {
     "url": "https://github.com/reportportal/agent-postman/issues"
