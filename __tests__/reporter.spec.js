@@ -39,7 +39,7 @@ describe('reporter', () => {
         reporter.tempSuiteId = '';
         reporter.tempTestId = '';
         reporter.collectionRunOptions = {};
-        reporter.suitesStackTempInfo = [];
+        reporter.suitesInfoStack = [];
         reporter.collectionMap.clear();
     });
 
@@ -249,16 +249,16 @@ describe('reporter', () => {
     });
 
     describe('getCurrentSuiteTempId', () => {
-        test('should return current suite tempId if suitesStackTempInfo is not empty', () => {
-            reporter.suitesStackTempInfo = [{ tempId: 'tempId' }];
+        test('should return current suite tempId if suitesInfoStack is not empty', () => {
+            reporter.suitesInfoStack = [{ tempId: 'tempId' }];
 
             const tempId = reporter.getCurrentSuiteTempId();
 
             expect(tempId).toEqual('tempId');
         });
 
-        test('should return null if suitesStackTempInfo is empty', () => {
-            reporter.suitesStackTempInfo = [];
+        test('should return null if suitesInfoStack is empty', () => {
+            reporter.suitesInfoStack = [];
 
             const tempId = reporter.getCurrentSuiteTempId();
 
