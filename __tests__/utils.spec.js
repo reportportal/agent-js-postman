@@ -142,6 +142,72 @@ describe('utils', () => {
         });
     });
 
+    describe('getClientInitObject', () => {
+        test('should return client init object', () => {
+            const options = {
+                token: 'token',
+                endpoint: 'endpoint',
+                launch: 'launch',
+                project: 'project',
+                rerun: true,
+                rerunOf: 'rerunOf',
+                description: 'description',
+                attributes: 'attributes',
+                debug: true
+            };
+
+            const clientInitObject = utils.getClientInitObject(options);
+
+            expect(clientInitObject).toEqual(options);
+        });
+
+        test('should return client init object with default launch name', () => {
+            const options = {
+                token: 'token',
+                endpoint: 'endpoint',
+                project: 'project',
+                rerun: true,
+                rerunOf: 'rerunOf',
+                description: 'description',
+                attributes: 'attributes',
+                debug: true
+            };
+
+            const clientInitObject = utils.getClientInitObject(options);
+
+            expect(clientInitObject).toEqual(Object.assign(options, { launch: 'Newman launch' }));
+        });
+    });
+
+    describe('getStartLaunchObj', () => {
+        test('should return start launch object', () => {
+            const options = {
+                launch: 'launch',
+                description: 'description',
+                attributes: 'attributes',
+                rerun: true,
+                rerunOf: 'rerunOf'
+            };
+
+            const startLaunchObject = utils.getStartLaunchObj(options);
+
+            expect(startLaunchObject).toEqual(options);
+        });
+
+        test('should return start launch object with default launch name', () => {
+            const options = {
+                description: 'description',
+                attributes: 'attributes',
+                rerun: true,
+                rerunOf: 'rerunOf'
+            };
+
+            const startLaunchObject = utils.getStartLaunchObj(options);
+
+            expect(startLaunchObject).toEqual(Object.assign(options, { launch: 'Newman launch' }));
+        });
+    });
+
     describe('Array.prototype.sliceOn', () => {
         test('should return an array from 0 index to 2 index', () => {
             const array = ['one', 'two', '//three'];

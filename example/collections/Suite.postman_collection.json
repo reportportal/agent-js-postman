@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "03bbd020-3204-4029-9b39-cda52734d51e",
-		"name": "Test",
+		"name": "Suite",
 		"description": "Description for the suite",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -173,12 +173,12 @@
 	],
 	"variable": [
 		{
-			"id": "62ecdd77-6d85-4289-ba28-44b632141d5b",
+			"id": "077ede9b-8093-4433-bd3c-818fbf042250",
 			"key": "rp.attributes",
-			"value": "keyOne:valueOne"
+			"value": "keySuiteOne:valueSuiteOne"
 		},
 		{
-			"id": "a60d60aa-1484-47d3-b267-a76f2ed557fb",
+			"id": "049be680-59d7-4e7c-a513-0a1d7ff34f29",
 			"key": "additional",
 			"value": "key"
 		}

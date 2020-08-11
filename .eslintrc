@@ -128,6 +128,7 @@
         "no-restricted-globals": "error",
         "no-shadow": "off",
         "no-shadow-restricted-names": "error",
+        "no-undef": "off",
         "no-undefined": "off",
         "no-unused-vars": "error",
 
@@ -314,7 +315,7 @@
         "no-useless-constructor": "error",
         "no-useless-rename": "error",
         "no-var": "off",
-        "object-shorthand": ["error", "consistent-as-needed"],
+        "object-shorthand": "off",
         "prefer-arrow-callback": "off",
         "prefer-const": "off",
         "prefer-destructuring": "off",
