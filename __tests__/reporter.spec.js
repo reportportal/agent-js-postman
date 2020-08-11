@@ -30,6 +30,7 @@ describe('reporter', () => {
 
         reporter = new Reporter(emitter, options, {});
         reporter.client = new RPClient();
+        reporter.launchObj.tempId = 'startLaunch';
     });
 
     afterEach(() => {
@@ -38,6 +39,7 @@ describe('reporter', () => {
         reporter.tempSuiteId = '';
         reporter.tempTestId = '';
         reporter.collectionRunOptions = {};
+        reporter.suitesStackTempInfo = [];
         reporter.collectionMap.clear();
     });
 
@@ -53,15 +55,16 @@ describe('reporter', () => {
     });
 
     describe('onStart', () => {
-        test('should call client.startLaunch with parameters, description taken from the collection', () => {
-            const launchObj = {
+        test('should call client.startTestItem with parameters with type SUITE', () => {
+            const expectedTestItemDataObj = {
+                type: 'SUITE',
+                name: 'name',
                 description: 'content description',
-                rerun: undefined,
-                rerunOf: undefined,
                 attributes: 'attributes'
             };
             reporter.collectionRunOptions = {
                 collection: {
+                    name: 'name',
                     description: {
                         content: 'content description'
                     }
@@ -69,156 +72,78 @@ describe('reporter', () => {
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
 
-            reporter.onStart();
-
-            expect(reporter.launchObj.tempId).toEqual('startLaunch');
-            expect(reporter.client.startLaunch).toHaveBeenCalledTimes(1);
-            expect(reporter.client.startLaunch).toHaveBeenCalledWith(launchObj);
-        });
-
-        test('should call client.startLaunch with parameters, description taken from the config', () => {
-            const launchObj = {
-                description: 'description',
-                rerun: undefined,
-                rerunOf: undefined,
-                attributes: 'attributes'
-            };
-            reporter.collectionRunOptions = {
-                collection: {}
-            };
-            jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
-
-            reporter.onStart();
-
-            expect(reporter.launchObj.tempId).toEqual('startLaunch');
-            expect(reporter.client.startLaunch).toHaveBeenCalledTimes(1);
-            expect(reporter.client.startLaunch).toHaveBeenCalledWith(launchObj);
-        });
-
-        test('should not call client.startLaunch if there is an error', () => {
-            expect(() => reporter.onStart('error')).toThrowError('error');
-            expect(reporter.client.startLaunch).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('onBeforeItem', () => {
-        test('should call client.startTestItem with parameters', () => {
-            const testItemDataObj = {
-                name: 'name',
-                type: 'TEST',
-                attributes: 'attributes'
-            };
-            const expectedCollectionMap = new Map([['ref', {
-                testId: 'startTestItem',
-                steps: []
-            }]]);
-            reporter.collectionRunOptions = {
-                collection: {}
-            };
-            jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
-
-            reporter.onBeforeItem(null, { item: { name: 'name' }, cursor: { ref: 'ref' } });
+            reporter.onStart(null, { cursor: { ref: 'ref' } });
 
             expect(reporter.client.startTestItem).toHaveBeenCalledTimes(1);
-            expect(reporter.client.startTestItem).toHaveBeenCalledWith(testItemDataObj, 'startLaunch');
-            expect(reporter.collectionMap).toEqual(expectedCollectionMap);
+            expect(reporter.client.startTestItem).toHaveBeenCalledWith(expectedTestItemDataObj, 'startLaunch');
         });
 
         test('should not call client.startTestItem if there is an error', () => {
-            expect(() => reporter.onBeforeItem('error')).toThrowError('error');
+            expect(() => reporter.onStart('error')).toThrowError('error');
             expect(reporter.client.startTestItem).not.toHaveBeenCalled();
         });
     });
 
     describe('onBeforeRequest', () => {
         let sendRequestLogs;
+        let getCurrentSuiteTempId;
 
         beforeEach(() => {
             sendRequestLogs = jest.spyOn(reporter, 'sendRequestLogs').mockImplementation(() => {});
+            getCurrentSuiteTempId = jest.spyOn(reporter, 'getCurrentSuiteTempId').mockImplementation(() => 'parentId');
         });
 
         afterEach(() => {
             sendRequestLogs.mockRestore();
+            getCurrentSuiteTempId.mockRestore();
         });
 
-        test('should call client.startTestItem, sendRequestLogs with parameters', () => {
+        test('should call client.startTestItem with parameters with type TEST', () => {
+
             const testItemDataObj = {
-                name: 'step name',
-                type: 'STEP',
+                name: 'name',
+                type: 'TEST',
+                description: 'description',
                 attributes: 'attributes'
             };
-            const expectedSteps = [{
-                stepId: 'startTestItem',
-                requestId: 'id',
-                name: 'step name'
-            }];
-            reporter.collectionMap = new Map([['ref', {
+            const expectedCollectionMap = new Map([['ref', {
                 testId: 'startTestItem',
+                requestId: 'id',
                 steps: []
             }]]);
             reporter.collectionRunOptions = {
-                environment: {}
+                environment: {},
+                collection: {}
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
 
             reporter.onBeforeRequest(null, {
-                item: { id: 'id' },
-                request: { description: { content: 'step name' } },
-                cursor: { ref: 'ref' }
+                item: { name: 'name', id: 'id' },
+                cursor: { ref: 'ref' },
+                request: {
+                    description: { content: 'description' }
+                }
             });
 
             expect(reporter.client.startTestItem).toHaveBeenCalledTimes(1);
-            expect(reporter.client.startTestItem).toHaveBeenCalledWith(testItemDataObj, 'startLaunch', 'startTestItem');
-            expect(reporter.sendRequestLogs).toHaveBeenCalledTimes(1);
+            expect(reporter.client.startTestItem).toHaveBeenCalledWith(testItemDataObj, 'startLaunch', 'parentId');
             expect(reporter.sendRequestLogs).toHaveBeenCalledWith('startTestItem', {
-                description: { content: 'step name' }
+                description: { content: 'description' }
             });
-            expect(reporter.collectionMap.get('ref').steps).toEqual(expectedSteps);
+            expect(reporter.collectionMap).toEqual(expectedCollectionMap);
         });
 
-        test('should call client.startTestItem, sendRequestLogs with parameters, default step name', () => {
-            const testItemDataObj = {
-                name: 'Postman request',
-                type: 'STEP',
-                attributes: 'attributes'
-            };
-            const expectedSteps = [{
-                stepId: 'startTestItem',
-                requestId: 'id',
-                name: 'Postman request'
-            }];
-            reporter.collectionMap = new Map([['ref', {
-                testId: 'startTestItem',
-                steps: []
-            }]]);
-            reporter.collectionRunOptions = {
-                environment: {}
-            };
-            jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
-
-            reporter.onBeforeRequest(null, {
-                item: { id: 'id' },
-                request: {},
-                cursor: { ref: 'ref' }
-            });
-
-            expect(reporter.client.startTestItem).toHaveBeenCalledWith(testItemDataObj, 'startLaunch', 'startTestItem');
-            expect(reporter.collectionMap.get('ref').steps).toEqual(expectedSteps);
-        });
-
-        test('should not call client.startTestItem, sendRequestLogs if there is an error', () => {
+        test('should not call client.startTestItem if there is an error', () => {
             expect(() => reporter.onBeforeRequest('error')).toThrowError('error');
             expect(reporter.client.startTestItem).not.toHaveBeenCalled();
-            expect(reporter.sendRequestLogs).not.toHaveBeenCalled();
         });
     });
 
     describe('onBeforeTest', () => {
-        test('should call client.startTestItem with parameters', () => {
+        test('should call client.startTestItem with parameters with type STEP', () => {
             const testItemDataObj = {
                 name: 'step name',
-                type: 'STEP',
-                attributes: 'attributes'
+                type: 'STEP'
             };
             const expectedSteps = [{
                 stepId: 'startTestItem',
@@ -231,7 +156,6 @@ describe('reporter', () => {
             reporter.collectionRunOptions = {
                 environment: {}
             };
-            jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
             jest.spyOn(utils, 'getStepNames').mockImplementation(() => ['step name']);
 
             reporter.onBeforeTest(null, {
@@ -258,19 +182,22 @@ describe('reporter', () => {
     describe('onBeforeDone', () => {
         let finishSteps;
         let finishTest;
+        let finishSuite;
 
         beforeEach(() => {
             finishSteps = jest.spyOn(reporter, 'finishSteps').mockImplementation(() => {});
             finishTest = jest.spyOn(reporter, 'finishTest').mockImplementation(() => {});
+            finishSuite = jest.spyOn(reporter, 'finishSuite').mockImplementation(() => {});
         });
 
         afterEach(() => {
             finishSteps.mockRestore();
             finishTest.mockRestore();
+            finishSuite.mockRestore();
         });
 
-        test('should call finishSteps and finishTest with parameters', () => {
-            const expectedTestObj =  { steps: [], testId: 'startTestItem' };
+        test('should call finishSteps, finishTest and finishSuite with parameters', () => {
+            const expectedTestObj = { steps: [], testId: 'startTestItem' };
             reporter.collectionMap = new Map([['ref', {
                 testId: 'startTestItem',
                 steps: []
@@ -282,14 +209,17 @@ describe('reporter', () => {
 
             expect(reporter.finishSteps).toHaveBeenCalledTimes(1);
             expect(reporter.finishTest).toHaveBeenCalledTimes(1);
+            expect(reporter.finishSuite).toHaveBeenCalledTimes(1);
             expect(reporter.finishSteps).toHaveBeenCalledWith('ref', expectedTestObj, 'run');
             expect(reporter.finishTest).toHaveBeenCalledWith('ref', expectedTestObj, 'run');
+            expect(reporter.finishSuite).toHaveBeenCalledWith();
         });
 
-        test('should not call finishTest and finishSteps if there is an error', () => {
+        test('should not call finishTest, finishSteps and finishSuite if there is an error', () => {
             expect(() => reporter.onBeforeDone('error')).toThrowError('error');
             expect(reporter.finishSteps).not.toHaveBeenCalled();
             expect(reporter.finishTest).not.toHaveBeenCalled();
+            expect(reporter.finishSuite).not.toHaveBeenCalled();
         });
     });
 
@@ -315,6 +245,24 @@ describe('reporter', () => {
         test('should not call client.finishLaunch if there is an error', () => {
             expect(() => reporter.onDone('error')).toThrowError('error');
             expect(reporter.client.finishLaunch).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getCurrentSuiteTempId', () => {
+        test('should return current suite tempId if suitesStackTempInfo is not empty', () => {
+            reporter.suitesStackTempInfo = [{ tempId: 'tempId' }];
+
+            const tempId = reporter.getCurrentSuiteTempId();
+
+            expect(tempId).toEqual('tempId');
+        });
+
+        test('should return null if suitesStackTempInfo is empty', () => {
+            reporter.suitesStackTempInfo = [];
+
+            const tempId = reporter.getCurrentSuiteTempId();
+
+            expect(tempId).toEqual(null);
         });
     });
 
@@ -411,30 +359,6 @@ describe('reporter', () => {
     });
 
     describe('finishSteps', () => {
-        test('should call failAllSteps with parameters if request step has been finished with errors', () => {
-            const testObj = {
-                testId: 'startTestItem',
-                steps: [{
-                    stepId: 'startTestItem',
-                    requestId: 'id',
-                    name: 'step name'
-                }]
-            };
-            const runObj = {
-                executions: [{
-                    id: 'id',
-                    requestError: {
-                        message: 'requestError'
-                    }
-                }]
-            };
-            jest.spyOn(reporter, 'failAllSteps');
-
-            reporter.finishSteps('ref', testObj, runObj);
-
-            expect(reporter.failAllSteps).toHaveBeenCalledWith(testObj, 'requestError');
-        });
-
         test('should call failAllSteps with parameters if if there is an error in a test-scripts', () => {
             const testObj = {
                 testId: 'startTestItem',
@@ -532,38 +456,91 @@ describe('reporter', () => {
     });
 
     describe('finishTest', () => {
-        test('should call client.finishTestItem with status failed if cursor.ref is the same as reference', () => {
+        test('should call logMessage with ERROR and client.finishTestItem with status failed if there is requestError', () => {
             const testObj = {
-                testId: 'startTestItem'
+                testId: 'startTestItem',
+                requestId: 'id'
+            };
+            const runObj = {
+                executions: [{
+                    id: 'id',
+                    requestError: {
+                        message: 'requestError'
+                    }
+                }]
+            };
+            jest.spyOn(reporter, 'logMessage');
+
+            reporter.finishTest('ref', testObj, runObj);
+
+            expect(reporter.logMessage).toHaveBeenCalledWith('startTestItem', 'requestError', 'ERROR');
+            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'FAILED' });
+        });
+
+        test('should call sendResponseLogs and client.finishTestItem with status failed if cursor.ref is the same as reference', () => {
+            const testObj = {
+                testId: 'startTestItem',
+                requestId: 'id'
             };
             const runObj = {
                 failures: [{
                     cursor: {
                         ref: 'ref'
                     }
+                }],
+                executions: [{
+                    id: 'id',
+                    response: 'response'
                 }]
             };
+            jest.spyOn(reporter, 'sendResponseLogs');
 
             reporter.finishTest('ref', testObj, runObj);
 
+            expect(reporter.sendResponseLogs).toHaveBeenCalledWith('startTestItem', 'response');
             expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'FAILED' });
         });
 
-        test('should call client.finishTestItem with status passed if cursor.ref is not the same as reference', () => {
+        test('should call sendResponseLogs and client.finishTestItem with status passed if cursor.ref is not the same as reference', () => {
             const testObj = {
-                testId: 'startTestItem'
+                testId: 'startTestItem',
+                requestId: 'id'
             };
             const runObj = {
                 failures: [{
                     cursor: {
                         ref: 'refTwo'
                     }
+                }],
+                executions: [{
+                    id: 'id',
+                    response: 'response'
                 }]
             };
+            jest.spyOn(reporter, 'sendResponseLogs');
 
             reporter.finishTest('ref', testObj, runObj);
 
+            expect(reporter.sendResponseLogs).toHaveBeenCalledWith('startTestItem', 'response');
             expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'PASSED' });
+        });
+    });
+
+    describe('finishSuite', () => {
+        let getCurrentSuiteTempId;
+
+        beforeEach(() => {
+            getCurrentSuiteTempId = jest.spyOn(reporter, 'getCurrentSuiteTempId').mockImplementation(() => 'parentId');
+        });
+
+        afterEach(() => {
+            getCurrentSuiteTempId.mockRestore();
+        });
+
+        test('should call client.finishTestItem with correct parameters', () => {
+            reporter.finishSuite();
+
+            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('parentId', {});
         });
     });
 });
