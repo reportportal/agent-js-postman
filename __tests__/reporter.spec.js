@@ -464,6 +464,9 @@ describe('reporter', () => {
             const runObj = {
                 executions: [{
                     id: 'id',
+                    cursor: {
+                        httpRequestId: 'id'
+                    },
                     requestError: {
                         message: 'requestError'
                     }
@@ -490,6 +493,9 @@ describe('reporter', () => {
                 }],
                 executions: [{
                     id: 'id',
+                    cursor: {
+                        httpRequestId: 'id'
+                    },
                     response: 'response'
                 }]
             };
@@ -514,6 +520,9 @@ describe('reporter', () => {
                 }],
                 executions: [{
                     id: 'id',
+                    cursor: {
+                        httpRequestId: 'id'
+                    },
                     response: 'response'
                 }]
             };
