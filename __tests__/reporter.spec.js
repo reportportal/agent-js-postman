@@ -27,6 +27,7 @@ describe('reporter', () => {
         const emitter = {
             on: jest.fn()
         };
+        jest.spyOn(utils, 'getCollectionPath').mockImplementation(() => 'collectionPath');
 
         reporter = new Reporter(emitter, options, {});
         reporter.client = new RPClient();
@@ -60,7 +61,8 @@ describe('reporter', () => {
                 type: 'SUITE',
                 name: 'name',
                 description: 'content description',
-                attributes: 'attributes'
+                attributes: 'attributes',
+                codeRef: 'collectionPath/name'
             };
             reporter.collectionRunOptions = {
                 collection: {
@@ -99,12 +101,12 @@ describe('reporter', () => {
         });
 
         test('should call client.startTestItem with parameters with type TEST', () => {
-
             const testItemDataObj = {
                 name: 'name',
                 type: 'TEST',
                 description: 'description',
-                attributes: 'attributes'
+                attributes: 'attributes',
+                codeRef: 'collectionPath/suite/name'
             };
             const expectedCollectionMap = new Map([['ref', {
                 testId: 'startTestItem',
@@ -113,7 +115,9 @@ describe('reporter', () => {
             }]]);
             reporter.collectionRunOptions = {
                 environment: {},
-                collection: {}
+                collection: {
+                    name: 'suite'
+                }
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
 
@@ -143,7 +147,8 @@ describe('reporter', () => {
         test('should call client.startTestItem with parameters with type STEP', () => {
             const testItemDataObj = {
                 name: 'step name',
-                type: 'STEP'
+                type: 'STEP',
+                codeRef: 'collectionPath/suite/test/step name'
             };
             const expectedSteps = [{
                 stepId: 'startTestItem',
@@ -154,7 +159,10 @@ describe('reporter', () => {
                 steps: []
             }]]);
             reporter.collectionRunOptions = {
-                environment: {}
+                environment: {},
+                collection: {
+                    name: 'suite'
+                }
             };
             jest.spyOn(utils, 'getStepNames').mockImplementation(() => ['step name']);
 
@@ -165,7 +173,8 @@ describe('reporter', () => {
                         exec: ['step name']
                     }
                 }],
-                cursor: { ref: 'ref' }
+                cursor: { ref: 'ref' },
+                item: { name: 'test' }
             });
 
             expect(reporter.client.startTestItem).toHaveBeenCalledTimes(1);

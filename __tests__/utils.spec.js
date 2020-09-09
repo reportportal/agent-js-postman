@@ -208,6 +208,52 @@ describe('utils', () => {
         });
     });
 
+    describe('getCollectionPath', function () {
+        test('should return correct collection path with separator', function () {
+            jest.mock('path', () => ({
+                sep: '\\'
+            }));
+            jest.spyOn(process, 'cwd').mockImplementation(() => 'C:\\testProject');
+            const mockedTest = {
+                filePath: 'C:\\testProject\\test\\example.js'
+            };
+            const expectedCollectionPath = 'test/example.js';
+
+            const codeRef = utils.getCollectionPath(mockedTest.filePath);
+
+            expect(codeRef).toEqual(expectedCollectionPath);
+        });
+
+        test('should return correct collection path without separator', function () {
+            jest.mock('path', () => ({
+                sep: '\\'
+            }));
+            jest.spyOn(process, 'cwd').mockImplementation(() => 'C:\\testProject');
+            const mockedTest = {
+                filePath: 'C:\\testProject\\example.js'
+            };
+            const expectedCollectionPath = 'example.js';
+
+            const codeRef = utils.getCollectionPath(mockedTest.filePath);
+
+            expect(codeRef).toEqual(expectedCollectionPath);
+        });
+    });
+
+    describe('getCodeRef', function () {
+        test('should return code ref', function () {
+            const mockedTest = {
+                testPath: 'example/Test',
+                title: 'testTitle'
+            };
+            const expectedCodeRef = 'example/Test/testTitle';
+
+            const codeRef = utils.getCodeRef(mockedTest.testPath, mockedTest.title);
+
+            expect(codeRef).toEqual(expectedCodeRef);
+        });
+    });
+
     describe('Array.prototype.sliceOn', () => {
         test('should return an array from 0 index to 2 index', () => {
             const array = ['one', 'two', '//three'];

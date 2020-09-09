@@ -17,6 +17,7 @@
 const { getOptions } = require('./mocks/reportportal-client.mock');
 const Reporter = require('./../lib/reporter');
 const postmanReporter = require('./../lib/index');
+const utils = require('./../lib/utils');
 
 const options = getOptions();
 
@@ -25,6 +26,7 @@ describe('index', () => {
         const emitter = {
             on: jest.fn()
         };
+        jest.spyOn(utils, 'getCollectionPath').mockImplementation(() => 'collectionPath');
         const instanceOfReporter = postmanReporter(emitter, options, {});
 
         expect(instanceOfReporter).toBeInstanceOf(Reporter);
