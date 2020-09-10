@@ -289,6 +289,15 @@ describe('utils', () => {
         });
     });
 
+    describe('getAgentInfo', () => {
+        test('should contain version and name properties', () => {
+            const agentParams = utils.getAgentInfo();
+
+            expect(Object.keys(agentParams)).toContain('version');
+            expect(Object.keys(agentParams)).toContain('name');
+        });
+    });
+
     describe('Array.prototype.sliceOn', () => {
         test('should return an array from 0 index to 2 index', () => {
             const array = ['one', 'two', '//three'];

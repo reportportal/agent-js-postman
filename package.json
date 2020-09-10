@@ -1,5 +1,5 @@
 {
-  "name": "@reportportal/newman-reporter-reportportal",
+  "name": "@reportportal/agent-js-postman",
   "version": "5.0.0",
   "description": "Reportportal reporter for newman",
   "keywords": [
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.15",
-    "@reportportal/client-javascript": "^5.0.0",
+    "@reportportal/client-javascript": "^5.0.2",
     "string_decoder": "^1.2.0"
   },
   "devDependencies": {
