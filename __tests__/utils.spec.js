@@ -15,6 +15,7 @@
  */
 
 const utils = require('./../lib/utils');
+const pjson = require('./../package.json');
 
 describe('utils', () => {
     describe('matchPattern', () => {
@@ -184,27 +185,61 @@ describe('utils', () => {
             const options = {
                 launch: 'launch',
                 description: 'description',
-                attributes: 'attributes',
+                attributes: [
+                    {
+                        key: 'YourKey',
+                        value: 'YourValue'
+                    }, {
+                        value: 'YourValue'
+                    }
+                ],
                 rerun: true,
                 rerunOf: 'rerunOf'
             };
 
             const startLaunchObject = utils.getStartLaunchObj(options);
 
-            expect(startLaunchObject).toEqual(options);
+            expect(startLaunchObject).toEqual(Object.assign(options, {
+                attributes: [{
+                    key: 'YourKey',
+                    value: 'YourValue'
+                }, {
+                    value: 'YourValue'
+                }, {
+                    key: 'agent',
+                    value: `${pjson.name}|${pjson.version}`,
+                    system: true
+                }]
+            }));
         });
 
         test('should return start launch object with default launch name', () => {
             const options = {
                 description: 'description',
-                attributes: 'attributes',
+                attributes: [
+                    {
+                        key: 'YourKey',
+                        value: 'YourValue'
+                    }
+                ],
                 rerun: true,
                 rerunOf: 'rerunOf'
             };
 
             const startLaunchObject = utils.getStartLaunchObj(options);
 
-            expect(startLaunchObject).toEqual(Object.assign(options, { launch: 'Newman launch' }));
+            expect(startLaunchObject).toEqual(Object.assign(options,
+                { launch: 'Newman launch' },
+                { attributes: [
+                    {
+                        key: 'YourKey',
+                        value: 'YourValue'
+                    }, {
+                        key: 'agent',
+                        value: `${pjson.name}|${pjson.version}`,
+                        system: true
+                    }
+                ] }));
         });
     });
 
