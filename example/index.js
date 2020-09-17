@@ -2,8 +2,10 @@ const newman = require('newman');
 
 newman.run(
     {
-        collection: './collections/Suite.postman_collection.json',
+        collection: './collections/test.json',
+        iterationData: './collections/path.csv',
         reporters: '@reportportal/reportportal',
+        iterationCount: 4,
         reporter: {
             '@reportportal/reportportal': {
                 endpoint: 'http://dev.epm-rpp.projects.epam.com:8080/api/v1',

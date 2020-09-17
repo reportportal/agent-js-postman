@@ -298,6 +298,27 @@ describe('utils', () => {
         });
     });
 
+    describe('getParameters', () => {
+        test('should return an array of objects with correct data', () => {
+            const data = [{ path: 'post', value: 5 }, { path: 'get', value: 3 }];
+            const expectedParameters = [{ key: 'path', value: 'post' }, { key: 'value', value: 5 }];
+
+            const parameters = utils.getParameters(data, 0);
+
+            expect(parameters).toEqual(expectedParameters);
+        });
+
+        // eslint-disable-next-line max-len
+        test('should take the last element from a data array if the length of the array is less than an index and return an array of objects', () => {
+            const data = [{ path: 'post', value: 5 }, { path: 'get', value: 3 }];
+            const expectedParameters = [{ key: 'path', value: 'get' }, { key: 'value', value: 3 }];
+
+            const parameters = utils.getParameters(data, 3);
+
+            expect(parameters).toEqual(expectedParameters);
+        });
+    });
+
     describe('Array.prototype.sliceOn', () => {
         test('should return an array from 0 index to 2 index', () => {
             const array = ['one', 'two', '//three'];

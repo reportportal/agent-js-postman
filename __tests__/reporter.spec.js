@@ -106,7 +106,8 @@ describe('reporter', () => {
                 type: 'TEST',
                 description: 'description',
                 attributes: 'attributes',
-                codeRef: 'collectionPath/suite/name'
+                codeRef: 'collectionPath/suite/name',
+                parameters: 'parameters'
             };
             const expectedCollectionMap = new Map([['ref', {
                 testId: 'startTestItem',
@@ -117,13 +118,15 @@ describe('reporter', () => {
                 environment: {},
                 collection: {
                     name: 'suite'
-                }
+                },
+                iterationData: [{ path: 'post', value: 5 }]
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
+            jest.spyOn(utils, 'getParameters').mockImplementation(() => 'parameters');
 
             reporter.onBeforeRequest(null, {
                 item: { name: 'name', id: 'id' },
-                cursor: { ref: 'ref' },
+                cursor: { ref: 'ref', iteration: 0 },
                 request: {
                     description: { content: 'description' }
                 }
@@ -272,6 +275,26 @@ describe('reporter', () => {
             const tempId = reporter.getCurrentSuiteTempId();
 
             expect(tempId).toEqual(null);
+        });
+    });
+
+    describe('getTestName', () => {
+        test('should return test name with iteration number if iterationCount is not undefined', () => {
+            const expectedTestName = 'name #1';
+            reporter.collectionRunOptions.iterationCount = 4;
+
+            const testName = reporter.getTestName({ cursor: { iteration: 0 }, item: { name: 'name' } });
+
+            expect(expectedTestName).toEqual(testName);
+        });
+
+        test('should return test name without iteration number if iterationCount is undefined', () => {
+            const expectedTestName = 'name';
+            reporter.collectionRunOptions.iterationCount = undefined;
+
+            const testName = reporter.getTestName({ cursor: { iteration: 0 }, item: { name: 'name' } });
+
+            expect(expectedTestName).toEqual(testName);
         });
     });
 
