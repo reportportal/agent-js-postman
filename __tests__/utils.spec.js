@@ -415,4 +415,22 @@ describe('utils', () => {
             expect(result).toEqual(array);
         });
     });
+
+    describe('Array.prototype.groupBySpecificField', () => {
+        test('should return array that is grouped by specific field', () => {
+            const array = [{ name: 'name' }, null, null, { additional: 'additional' }, { name: 'nameTwo' }];
+
+            const result = array.groupBySpecificField('name', ['additional']);
+
+            expect(result).toEqual([{ name: 'name', additional: 'additional' }, { name: 'nameTwo' }]);
+        });
+
+        test('should return an empty array if the parameter doesn\'t set', () => {
+            const array = ['one', 'two', 'three'];
+
+            const result = array.groupBySpecificField();
+
+            expect(result).toEqual([]);
+        });
+    });
 });
