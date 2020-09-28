@@ -15,6 +15,7 @@
  */
 
 const utils = require('./../lib/utils');
+const { testPatterns, pmVariablesTestCaseIdPatterns } = require('./../lib/constants/patterns');
 const pjson = require('./../package.json');
 
 describe('utils', () => {
@@ -64,11 +65,19 @@ describe('utils', () => {
         });
     });
 
-    describe('getStepNames', () => {
-        test('should return correct array of stepNames', () => {
-            const stepNames = utils.getStepNames('pm.test("Test, status code is 400", function () {');
+    describe('getStepParameterByPatterns', () => {
+        test('should return correct array of parameter with specific pattern testPatterns', () => {
+            const stepNames = utils.getStepParameterByPatterns('pm.test("Test, status code is 400", function () {',
+                testPatterns);
 
             expect(stepNames).toEqual(['Test, status code is 400']);
+        });
+
+        test('should return correct array of parameter with specific pattern pmVariablesTestCaseIdPatterns', () => {
+            const testCaseId = utils.getStepParameterByPatterns('pm.variables.set("rp.testCaseId", "testCaseId");',
+                pmVariablesTestCaseIdPatterns);
+
+            expect(testCaseId).toEqual(['testCaseId']);
         });
     });
 
@@ -140,6 +149,42 @@ describe('utils', () => {
             const attributes = utils.getAttributes(variables);
 
             expect(attributes).toEqual([]);
+        });
+    });
+
+    describe('getTestCaseId', () => {
+        test('should return correct testCaseId', () => {
+            const variables = {
+                members: [
+                    {
+                        id: 'id',
+                        key: 'rp.testCaseId',
+                        value: 'testCaseId',
+                        type: 'string'
+                    }
+                ]
+            };
+
+            const testCaseId = utils.getTestCaseId(variables);
+
+            expect(testCaseId).toEqual('testCaseId');
+        });
+
+        test('should return undefined, if there is no match with rp.testCaseId namespace', () => {
+            const variables = {
+                members: [
+                    {
+                        id: 'id',
+                        key: 'KeyOne',
+                        value: 'valueOne',
+                        type: 'string'
+                    }
+                ]
+            };
+
+            const testCaseId = utils.getTestCaseId(variables);
+
+            expect(testCaseId).toEqual(undefined);
         });
     });
 
@@ -306,6 +351,14 @@ describe('utils', () => {
             const parameters = utils.getParameters(data, 0);
 
             expect(parameters).toEqual(expectedParameters);
+        });
+
+        test('should return undefined in case if no data', () => {
+            const data = undefined;
+
+            const parameters = utils.getParameters(data, 0);
+
+            expect(parameters).toEqual(undefined);
         });
 
         // eslint-disable-next-line max-len

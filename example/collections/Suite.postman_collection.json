@@ -10,23 +10,24 @@
 			"name": "Request one",
 			"event": [
 				{
-					"listen": "prerequest",
+					"listen": "test",
 					"script": {
-						"id": "e275c661-6880-49b4-98a2-5678c6d88c7f",
+						"id": "818f27e9-610c-477e-8219-105ca3502a52",
 						"exec": [
-							""
+							"pm.test(\"Test, status code is 200\", function () {\r",
+							"    pm.variables.set(\"rp.testCaseId\", \"testCaseIdForStepRequestOne\");\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
 				},
 				{
-					"listen": "test",
+					"listen": "prerequest",
 					"script": {
-						"id": "9c5fdd0e-7d06-47b9-adfc-fdf73fbd651a",
+						"id": "bd982915-9641-4bd9-b45b-0aecb952d16f",
 						"exec": [
-							"pm.test(\"Test, status code is 200\", function () {\r",
-							"        pm.response.to.have.status(200);\r",
-							"});"
+							"pm.environment.set(\"rp.testCaseId\", \"RequestOneTestCaseId\");"
 						],
 						"type": "text/javascript"
 					}
@@ -47,6 +48,11 @@
 						{
 							"key": "attr",
 							"value": "1234"
+						},
+						{
+							"key": "collection_tries",
+							"value": "2",
+							"disabled": true
 						}
 					]
 				},
@@ -76,7 +82,8 @@
 					"script": {
 						"id": "9defd7f0-29c8-4bdf-871d-e0a3b270e1d5",
 						"exec": [
-							"pm.environment.set(\"rp.attributes\", \"testKey:testValue;testtwoValue\");"
+							"pm.environment.set(\"rp.attributes\", \"testKey:testValue;testtwoValue\");\r",
+							"pm.environment.set(\"rp.testCaseId\", \"RequestTwoTestCaseId\");"
 						],
 						"type": "text/javascript"
 					}
@@ -101,26 +108,29 @@
 			"name": "Request three",
 			"event": [
 				{
-					"listen": "prerequest",
+					"listen": "test",
 					"script": {
-						"id": "a8f5d23b-6f6b-4e9a-8b9e-5668e3ce62bd",
+						"id": "33035730-4ecb-484b-b704-e88a4ac46699",
 						"exec": [
-							"pm.environment.set(\"rp.attributes\", \"testKey3:testValue3;testThreeValue\");"
+							"pm.test(\"Test, status code is 400\", function () {\r",
+							"    pm.variables.set(\"rp.testCaseId\", \"testCaseIdForStepRequestThree-1\");\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Test, status code is 200\", function () {\r",
+							"    pm.variables.set(\"rp.testCaseId\", \"testCaseIdForStepRequestThree-2\");\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
 				},
 				{
-					"listen": "test",
+					"listen": "prerequest",
 					"script": {
-						"id": "733fcb9d-61f7-4c97-ad7b-f5f1f34dcab4",
+						"id": "a3027d93-cd7d-4f68-9ee1-97b960dd27ed",
 						"exec": [
-							"pm.test(\"Test, status code is 400\", function () {\r",
-							"        pm.response.to.have.status(400);\r",
-							"});\r",
-							"pm.test(\"Test, status code is 200\", function () {\r",
-							"        pm.response.to.have.status(200);\r",
-							"});"
+							"pm.environment.set(\"rp.attributes\", \"testKey3:testValue3;testThreeValue\");\r",
+							"pm.environment.set(\"rp.testCaseId\", \"RequestThreeTestCaseId\");"
 						],
 						"type": "text/javascript"
 					}
@@ -173,14 +183,19 @@
 	],
 	"variable": [
 		{
-			"id": "077ede9b-8093-4433-bd3c-818fbf042250",
+			"id": "caa06430-e649-4832-834f-7d26dc5dad18",
 			"key": "rp.attributes",
 			"value": "keySuiteOne:valueSuiteOne"
 		},
 		{
-			"id": "049be680-59d7-4e7c-a513-0a1d7ff34f29",
+			"id": "5bfea52f-8e15-4018-82b1-dc0f7f27aa75",
 			"key": "additional",
 			"value": "key"
+		},
+		{
+			"id": "ad0a7eea-0ead-47cd-96ad-acfa0c2891b6",
+			"key": "rp.testCaseId",
+			"value": "SuiteTestCaseId"
 		}
 	],
 	"protocolProfileBehavior": {}

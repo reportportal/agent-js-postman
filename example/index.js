@@ -10,7 +10,7 @@ newman.run(
             '@reportportal/reportportal': {
                 endpoint: 'http://dev.epm-rpp.projects.epam.com:8080/api/v1',
                 token: '',
-                launch: 'postman',
+                launch: 'postmanTestCaseIdExample',
                 project: 'KATSIARYNA_TATARYNOVICH',
                 description: 'launch description',
                 attributes: [{
