@@ -62,6 +62,7 @@ describe('reporter', () => {
                 name: 'name',
                 description: 'content description',
                 attributes: 'attributes',
+                testCaseId: 'testCaseId',
                 codeRef: 'collectionPath/name'
             };
             reporter.collectionRunOptions = {
@@ -73,6 +74,7 @@ describe('reporter', () => {
                 }
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
+            jest.spyOn(utils, 'getTestCaseId').mockImplementation(() => 'testCaseId');
 
             reporter.onStart(null, { cursor: { ref: 'ref' } });
 
@@ -106,6 +108,7 @@ describe('reporter', () => {
                 type: 'TEST',
                 description: 'description',
                 attributes: 'attributes',
+                testCaseId: 'testCaseId',
                 codeRef: 'collectionPath/suite/name',
                 parameters: 'parameters'
             };
@@ -123,6 +126,7 @@ describe('reporter', () => {
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
             jest.spyOn(utils, 'getParameters').mockImplementation(() => 'parameters');
+            jest.spyOn(utils, 'getTestCaseId').mockImplementation(() => 'testCaseId');
 
             reporter.onBeforeRequest(null, {
                 item: { name: 'name', id: 'id' },
@@ -149,34 +153,38 @@ describe('reporter', () => {
     describe('onBeforeTest', () => {
         test('should call client.startTestItem with parameters with type STEP', () => {
             const testItemDataObj = {
-                name: 'step name',
+                name: 'step parameter',
+                testCaseId: 'step parameter',
                 type: 'STEP',
-                codeRef: 'collectionPath/suite/test/step name'
+                parameters: 'parameters',
+                codeRef: 'collectionPath/suite/test/step parameter'
             };
             const expectedSteps = [{
                 stepId: 'startTestItem',
-                name: 'step name'
+                name: 'step parameter'
             }];
             reporter.collectionMap = new Map([['ref', {
                 testId: 'startTestItem',
                 steps: []
             }]]);
             reporter.collectionRunOptions = {
+                iterationData: ['parameters'],
                 environment: {},
                 collection: {
                     name: 'suite'
                 }
             };
-            jest.spyOn(utils, 'getStepNames').mockImplementation(() => ['step name']);
+            jest.spyOn(utils, 'getStepParameterByPatterns').mockImplementation(() => ['step parameter']);
+            jest.spyOn(utils, 'getParameters').mockImplementation(() => 'parameters');
 
             reporter.onBeforeTest(null, {
                 events: [{
                     listen: 'test',
                     script: {
-                        exec: ['step name']
+                        exec: ['step parameter']
                     }
                 }],
-                cursor: { ref: 'ref' },
+                cursor: { ref: 'ref', iteration: 0 },
                 item: { name: 'test' }
             });
 
