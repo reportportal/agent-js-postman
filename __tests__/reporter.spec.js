@@ -55,6 +55,46 @@ describe('reporter', () => {
         });
     });
 
+    describe('onConsole', () => {
+        test('should add log to launchLogs array if the messages\'s first element is equals to "launch"', () => {
+            reporter.onConsole(null, {
+                level: 'log',
+                messages: ['launch', 'launch message']
+            });
+
+            expect(reporter.launchLogs).toEqual([{ level: 'log', message: 'launch message' }]);
+        });
+
+        test('should not add log to launchLogs if it is null', () => {
+            reporter.launchLogs = null;
+            reporter.onConsole(null, {
+                level: 'log',
+                messages: ['launch', 'launch message']
+            });
+
+            expect(reporter.launchLogs).toEqual(null);
+        });
+
+        test('should add log to suiteLogs array if the messages\'s first element is equals to "suite"', () => {
+            reporter.onConsole(null, {
+                level: 'log',
+                messages: ['suite', 'suite message']
+            });
+
+            expect(reporter.suiteLogs).toEqual([{ level: 'log', message: 'suite message' }]);
+        });
+
+        test('should not add log to suiteLogs if it is null', () => {
+            reporter.suiteLogs = null;
+            reporter.onConsole(null, {
+                level: 'log',
+                messages: ['suite', 'suite message']
+            });
+
+            expect(reporter.suiteLogs).toEqual(null);
+        });
+    });
+
     describe('onStart', () => {
         test('should call client.startTestItem with parameters with type SUITE', () => {
             const expectedTestItemDataObj = {
@@ -375,6 +415,18 @@ describe('reporter', () => {
             expect(reporter.logMessage).toHaveBeenCalledWith('stepId', 'Request: Method: method');
             expect(reporter.logMessage).toHaveBeenCalledWith('stepId', 'Request: Headers: key:value');
             expect(reporter.logMessage).toHaveBeenCalledWith('stepId', 'Request: Body: body');
+        });
+    });
+
+    describe('sendLaunchLogMessage', () => {
+        test('should call logMessage with parameters and launch id', () => {
+            reporter.launchObj.tempId = 'launchId';
+            jest.spyOn(reporter, 'logMessage').mockImplementation(() => {});
+
+            reporter.sendLaunchLogMessage('launch message', 'info');
+
+            expect(reporter.logMessage).toHaveBeenCalledTimes(1);
+            expect(reporter.logMessage).toHaveBeenCalledWith('launchId', 'launch message', 'info');
         });
     });
 
