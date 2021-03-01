@@ -66,6 +66,13 @@ describe('reporter', () => {
             getTime.mockRestore();
         });
 
+        test('launchLogs, suiteLogs, testLogs should be empty array if there is an error', () => {
+            expect(() => reporter.onConsole('error')).toThrowError('error');
+            expect(reporter.launchLogs).toEqual([]);
+            expect(reporter.suiteLogs).toEqual([]);
+            expect(reporter.testLogs).toEqual([]);
+        });
+
         test('should add log to launchLogs array if the messages\'s first element is equals to "launch"', () => {
             reporter.onConsole(null, {
                 level: 'log',
@@ -102,6 +109,15 @@ describe('reporter', () => {
             });
 
             expect(reporter.suiteLogs).toEqual(null);
+        });
+
+        test('should add log to testLogs array if the messages\'s first element is equals to "test"', () => {
+            reporter.onConsole(null, {
+                level: 'log',
+                messages: ['test', 'test message']
+            });
+
+            expect(reporter.testLogs).toEqual([{ level: 'log', message: 'test message', time: 1234567891233 }]);
         });
     });
 
