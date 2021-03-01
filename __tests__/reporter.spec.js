@@ -56,13 +56,23 @@ describe('reporter', () => {
     });
 
     describe('onConsole', () => {
+        let getTime;
+
+        beforeEach(() => {
+            getTime = jest.spyOn(reporter, 'getTime').mockImplementation(() => 1234567891233);
+        });
+
+        afterEach(() => {
+            getTime.mockRestore();
+        });
+
         test('should add log to launchLogs array if the messages\'s first element is equals to "launch"', () => {
             reporter.onConsole(null, {
                 level: 'log',
                 messages: ['launch', 'launch message']
             });
 
-            expect(reporter.launchLogs).toEqual([{ level: 'log', message: 'launch message' }]);
+            expect(reporter.launchLogs).toEqual([{ level: 'log', message: 'launch message', time: 1234567891233 }]);
         });
 
         test('should not add log to launchLogs if it is null', () => {
@@ -81,7 +91,7 @@ describe('reporter', () => {
                 messages: ['suite', 'suite message']
             });
 
-            expect(reporter.suiteLogs).toEqual([{ level: 'log', message: 'suite message' }]);
+            expect(reporter.suiteLogs).toEqual([{ level: 'log', message: 'suite message', time: 1234567891233 }]);
         });
 
         test('should not add log to suiteLogs if it is null', () => {
@@ -348,17 +358,19 @@ describe('reporter', () => {
 
     describe('logMessage', () => {
         test('should call client.sendLog with parameters', () => {
+            jest.spyOn(reporter, 'getTime').mockImplementation(() => 1234567891233);
             reporter.logMessage('id', 'value', 'level');
 
             expect(reporter.client.sendLog).toHaveBeenCalledTimes(1);
-            expect(reporter.client.sendLog).toHaveBeenCalledWith('id', { level: 'level', message: 'value' });
+            expect(reporter.client.sendLog).toHaveBeenCalledWith('id', { level: 'level', message: 'value', time: 1234567891233 });
         });
 
         test('should call client.sendLog with parameters, default level', () => {
+            jest.spyOn(reporter, 'getTime').mockImplementation(() => 1234567891233);
             reporter.logMessage('id', 'value');
 
             expect(reporter.client.sendLog).toHaveBeenCalledTimes(1);
-            expect(reporter.client.sendLog).toHaveBeenCalledWith('id', { level: 'INFO', message: 'value' });
+            expect(reporter.client.sendLog).toHaveBeenCalledWith('id', { level: 'INFO', message: 'value', time: 1234567891233 });
         });
     });
 
@@ -423,10 +435,10 @@ describe('reporter', () => {
             reporter.launchObj.tempId = 'launchId';
             jest.spyOn(reporter, 'logMessage').mockImplementation(() => {});
 
-            reporter.sendLaunchLogMessage('launch message', 'info');
+            reporter.sendLaunchLogMessage('launch message', 'info', 1234567891233);
 
             expect(reporter.logMessage).toHaveBeenCalledTimes(1);
-            expect(reporter.logMessage).toHaveBeenCalledWith('launchId', 'launch message', 'info');
+            expect(reporter.logMessage).toHaveBeenCalledWith('launchId', 'launch message', 'info', 1234567891233);
         });
     });
 
