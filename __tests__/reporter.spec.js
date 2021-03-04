@@ -128,7 +128,7 @@ describe('reporter', () => {
                 name: 'name',
                 description: 'content description',
                 attributes: 'attributes',
-                testCaseId: 'testCaseId',
+                testCaseId: 'value',
                 codeRef: 'collectionPath/name'
             };
             reporter.collectionRunOptions = {
@@ -140,7 +140,7 @@ describe('reporter', () => {
                 }
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
-            jest.spyOn(utils, 'getValueByKey').mockImplementation(() => 'testCaseId');
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => 'value');
 
             reporter.onStart(null, { cursor: { ref: 'ref' } });
 
@@ -193,7 +193,7 @@ describe('reporter', () => {
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
             jest.spyOn(utils, 'getParameters').mockImplementation(() => 'parameters');
-            jest.spyOn(utils, 'getValueByKey').mockImplementation(() => 'value');
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => 'value');
 
             reporter.onBeforeRequest(null, {
                 item: { name: 'name', id: 'id' },
@@ -314,7 +314,7 @@ describe('reporter', () => {
     describe('onDone', () => {
         test('should call client.finishLaunch with parameters, status is failed', () => {
             reporter.collectionRunOptions.collection = {};
-            jest.spyOn(utils, 'getValueByKey').mockImplementation(() => undefined);
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => undefined);
 
             reporter.onDone(null, {
                 run: { failures: 'failures' }
@@ -326,7 +326,7 @@ describe('reporter', () => {
 
         test('should call client.finishLaunch with parameters, status is passed', () => {
             reporter.collectionRunOptions.collection = {};
-            jest.spyOn(utils, 'getValueByKey').mockImplementation(() => undefined);
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => undefined);
 
             reporter.onDone(null, {
                 run: {}
@@ -338,7 +338,7 @@ describe('reporter', () => {
 
         test('should call client.finishLaunch with parameters, status is skipped', () => {
             reporter.collectionRunOptions.collection = {};
-            jest.spyOn(utils, 'getValueByKey').mockImplementation(() => 'skipped');
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => 'skipped');
 
             reporter.onDone(null, {
                 run: {}

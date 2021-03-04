@@ -152,7 +152,7 @@ describe('utils', () => {
         });
     });
 
-    describe('getValueByKey', () => {
+    describe('getCollectionVariablesByKey', () => {
         test('should return correct testCaseId if key is equals to "testCaseId"', () => {
             const variables = {
                 members: [
@@ -165,7 +165,7 @@ describe('utils', () => {
                 ]
             };
 
-            const testCaseId = utils.getValueByKey( 'testCaseId', variables);
+            const testCaseId = utils.getCollectionVariablesByKey( 'testCaseId', variables);
 
             expect(testCaseId).toEqual('testCaseId');
         });
@@ -182,7 +182,7 @@ describe('utils', () => {
                 ]
             };
 
-            const status = utils.getValueByKey('status', variables);
+            const status = utils.getCollectionVariablesByKey('status', variables);
 
             expect(status).toEqual('passed');
         });
@@ -199,7 +199,7 @@ describe('utils', () => {
                 ]
             };
 
-            const testCaseId = utils.getValueByKey('testCaseId', variables);
+            const testCaseId = utils.getCollectionVariablesByKey('testCaseId', variables);
 
             expect(testCaseId).toEqual(undefined);
         });
