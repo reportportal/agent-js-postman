@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "test": "node ./index.js"
-  },
-  "dependencies": {
-    "@reportportal/newman-reporter-reportportal": "file:../../agent-postman",
-    "newman": "^4.5.5"
-  }
-}
