@@ -152,8 +152,8 @@ describe('utils', () => {
         });
     });
 
-    describe('getTestCaseId', () => {
-        test('should return correct testCaseId', () => {
+    describe('getCollectionVariablesByKey', () => {
+        test('should return correct testCaseId if key is equals to "testCaseId"', () => {
             const variables = {
                 members: [
                     {
@@ -165,12 +165,29 @@ describe('utils', () => {
                 ]
             };
 
-            const testCaseId = utils.getTestCaseId(variables);
+            const testCaseId = utils.getCollectionVariablesByKey( 'testCaseId', variables);
 
             expect(testCaseId).toEqual('testCaseId');
         });
 
-        test('should return undefined, if there is no match with rp.testCaseId namespace', () => {
+        test('should return correct status if key is equals to "status"', () => {
+            const variables = {
+                members: [
+                    {
+                        id: 'id',
+                        key: 'rp.status',
+                        value: 'passed',
+                        type: 'string'
+                    }
+                ]
+            };
+
+            const status = utils.getCollectionVariablesByKey('status', variables);
+
+            expect(status).toEqual('passed');
+        });
+
+        test('should return undefined, if there is no match with key namespace', () => {
             const variables = {
                 members: [
                     {
@@ -182,7 +199,7 @@ describe('utils', () => {
                 ]
             };
 
-            const testCaseId = utils.getTestCaseId(variables);
+            const testCaseId = utils.getCollectionVariablesByKey('testCaseId', variables);
 
             expect(testCaseId).toEqual(undefined);
         });

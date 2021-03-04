@@ -128,7 +128,7 @@ describe('reporter', () => {
                 name: 'name',
                 description: 'content description',
                 attributes: 'attributes',
-                testCaseId: 'testCaseId',
+                testCaseId: 'value',
                 codeRef: 'collectionPath/name'
             };
             reporter.collectionRunOptions = {
@@ -140,7 +140,7 @@ describe('reporter', () => {
                 }
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
-            jest.spyOn(utils, 'getTestCaseId').mockImplementation(() => 'testCaseId');
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => 'value');
 
             reporter.onStart(null, { cursor: { ref: 'ref' } });
 
@@ -174,14 +174,15 @@ describe('reporter', () => {
                 type: 'TEST',
                 description: 'description',
                 attributes: 'attributes',
-                testCaseId: 'testCaseId',
+                testCaseId: 'value',
                 codeRef: 'collectionPath/suite/name',
                 parameters: 'parameters'
             };
             const expectedCollectionMap = new Map([['ref', {
                 testId: 'startTestItem',
                 requestId: 'id',
-                steps: []
+                steps: [],
+                status: 'value'
             }]]);
             reporter.collectionRunOptions = {
                 environment: {},
@@ -192,7 +193,7 @@ describe('reporter', () => {
             };
             jest.spyOn(utils, 'getAttributes').mockImplementation(() => 'attributes');
             jest.spyOn(utils, 'getParameters').mockImplementation(() => 'parameters');
-            jest.spyOn(utils, 'getTestCaseId').mockImplementation(() => 'testCaseId');
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => 'value');
 
             reporter.onBeforeRequest(null, {
                 item: { name: 'name', id: 'id' },
@@ -227,7 +228,8 @@ describe('reporter', () => {
             };
             const expectedSteps = [{
                 stepId: 'startTestItem',
-                name: 'step parameter'
+                name: 'step parameter',
+                status: 'step parameter'
             }];
             reporter.collectionMap = new Map([['ref', {
                 testId: 'startTestItem',
@@ -311,6 +313,9 @@ describe('reporter', () => {
 
     describe('onDone', () => {
         test('should call client.finishLaunch with parameters, status is failed', () => {
+            reporter.collectionRunOptions.collection = {};
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => undefined);
+
             reporter.onDone(null, {
                 run: { failures: 'failures' }
             });
@@ -320,12 +325,27 @@ describe('reporter', () => {
         });
 
         test('should call client.finishLaunch with parameters, status is passed', () => {
+            reporter.collectionRunOptions.collection = {};
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => undefined);
+
             reporter.onDone(null, {
                 run: {}
             });
 
             expect(reporter.client.finishLaunch).toHaveBeenCalledTimes(1);
             expect(reporter.client.finishLaunch).toHaveBeenCalledWith('startLaunch', { status: 'PASSED' });
+        });
+
+        test('should call client.finishLaunch with parameters, status is skipped', () => {
+            reporter.collectionRunOptions.collection = {};
+            jest.spyOn(utils, 'getCollectionVariablesByKey').mockImplementation(() => 'skipped');
+
+            reporter.onDone(null, {
+                run: {}
+            });
+
+            expect(reporter.client.finishLaunch).toHaveBeenCalledTimes(1);
+            expect(reporter.client.finishLaunch).toHaveBeenCalledWith('startLaunch', { status: 'skipped' });
         });
 
         test('should not call client.finishLaunch if there is an error', () => {
