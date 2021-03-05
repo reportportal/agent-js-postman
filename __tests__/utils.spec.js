@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+const path = require('path');
 const utils = require('./../lib/utils');
 const { testPatterns, pmVariablesTestCaseIdPatterns } = require('./../lib/constants/patterns');
 const pjson = require('./../package.json');
@@ -308,12 +309,9 @@ describe('utils', () => {
 
     describe('getCollectionPath', function () {
         test('should return correct collection path with separator', function () {
-            jest.mock('path', () => ({
-                sep: '\\'
-            }));
-            jest.spyOn(process, 'cwd').mockImplementation(() => 'C:\\testProject');
+            jest.spyOn(process, 'cwd').mockImplementation(() => `C:${path.sep}testProject`);
             const mockedTest = {
-                filePath: 'C:\\testProject\\test\\example.js'
+                filePath: `C:${path.sep}testProject${path.sep}test${path.sep}example.js`
             };
             const expectedCollectionPath = 'test/example.js';
 
@@ -323,12 +321,9 @@ describe('utils', () => {
         });
 
         test('should return correct collection path without separator', function () {
-            jest.mock('path', () => ({
-                sep: '\\'
-            }));
-            jest.spyOn(process, 'cwd').mockImplementation(() => 'C:\\testProject');
+            jest.spyOn(process, 'cwd').mockImplementation(() => `C:${path.sep}testProject`);
             const mockedTest = {
-                filePath: 'C:\\testProject\\example.js'
+                filePath: `C:${path.sep}testProject${path.sep}example.js`
             };
             const expectedCollectionPath = 'example.js';
 
