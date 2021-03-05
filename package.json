@@ -1,5 +1,5 @@
 {
-  "name": "@reportportal/agent-js-postman",
+  "name": "@reportportal/newman-reporter-agent-js-postman",
   "version": "1.0.0",
   "description": "ReportPortal reporter for newman",
   "keywords": [

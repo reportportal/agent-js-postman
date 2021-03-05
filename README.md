@@ -1,4 +1,4 @@
-# @reportportal/agent-js-postman
+# @reportportal/newman-reporter-agent-js-postman
 
 Newman runtime reporter for ReportPortal which provides information about collection run.
 [ReportPortal](http://reportportal.io/)<br>
@@ -8,7 +8,7 @@ Newman runtime reporter for ReportPortal which provides information about collec
 The installation should be global if newman is installed globally, otherwise - local (replace -g from the command below with -S for a local installation).
 
 ```bash
-$ npm install -g @reportportal/agent-js-postman
+$ npm install -g @reportportal/newman-reporter-agent-js-postman
 ```
 
 ### Usage
@@ -17,17 +17,17 @@ There are two ways to enable this reporter - with command line or programmatical
 
 #### With CLI
 
-To enable this reporter you have to specify `reportportal` in Newman's `-r` or `--reporters` option.
+To enable this reporter you have to specify `agent-js-postman` in Newman's `-r` or `--reporters` option.
 
 ```bash
 $ newman run https://postman-echo.com/status/200 \
-    -r @reportportal/reportportal \
-    --reporter-@reportportal/reportportal-debug=true \
-    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
-    --reporter-@reportportal/reportportal-project=PROJECT_NAME \
-    --reporter-@reportportal/reportportal-description=LAUNCH_DESCRIPTION \
+    -r @reportportal/agent-js-postman \
+    --reporter-@reportportal/agent-js-postman-debug=true \
+    --reporter-@reportportal/agent-js-postman-endpoint=http://your-instance.com:8080/api/v1 \
+    --reporter-@reportportal/agent-js-postman-token=00000000-0000-0000-0000-000000000000 \
+    --reporter-@reportportal/agent-js-postman-launch=LAUNCH_NAME \
+    --reporter-@reportportal/agent-js-postman-project=PROJECT_NAME \
+    --reporter-@reportportal/agent-js-postman-description=LAUNCH_DESCRIPTION \
     -x
 ```
 
@@ -41,9 +41,9 @@ const newman = require("newman");
 newman.run(
     {
         collection: "./collections/newman-test_collection.json",
-        reporters: "@reportportal/reportportal",
+        reporters: "@reportportal/agent-js-postman",
         reporter: {
-            "@reportportal/reportportal": {
+            "@reportportal/agent-js-postman": {
                 endpoint: "http://your-instance.com:8080/api/v1",
                 token: "00000000-0000-0000-0000-000000000000",
                 launch: "LAUNCH_NAME",
