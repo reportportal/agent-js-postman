@@ -75,5 +75,6 @@ typings/
 # FuseBox cache
 .fusebox/
 
-# VS code
+# IDE
 .vscode/
+.idea/
