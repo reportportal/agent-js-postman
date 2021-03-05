@@ -1,15 +1,21 @@
 {
   "name": "@reportportal/agent-js-postman",
-  "version": "5.0.0",
-  "description": "Reportportal reporter for newman",
+  "version": "1.0.0",
+  "description": "ReportPortal reporter for newman",
   "keywords": [
     "postman",
     "newman",
     "epam"
   ],
-  "homepage": "https://github.com/reportportal/agent-postman",
+  "contributors": [
+    {
+      "name": "Ilya Koshaleu",
+      "email": ""
+    }
+  ],
+  "homepage": "https://github.com/reportportal/agent-js-postman",
   "main": "index",
-  "author": "Ilya Koshaleu",
+  "author": "ReportPortal.io",
   "license": "Apache-2.0",
   "scripts": {
     "test": "jest --detectOpenHandles --config ./jest.config.js",
@@ -18,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reportportal/agent-postman.git"
+    "url": "git+https://github.com/reportportal/agent-js-postman.git"
   },
   "dependencies": {
     "lodash": "^4.17.15",
@@ -32,7 +38,7 @@
     "jest": "^25.3.0"
   },
   "bugs": {
-    "url": "https://github.com/reportportal/agent-postman/issues"
+    "url": "https://github.com/reportportal/agent-js-postman/issues"
   },
   "directories": {
     "lib": "lib"
