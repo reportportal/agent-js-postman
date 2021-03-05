@@ -58,6 +58,7 @@ newman.run(
                         "value": "launchValue"
                     },
                 ],
+                mode: 'DEFAULT',
                 debug: true
             }
         }
@@ -85,6 +86,7 @@ Both CLI and programmatic runs support following options:
 | rerun     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                  |
 | rerunOf   | UUID of launch you want to rerun. If not specified, report portal will update the latest launch with the same name.                                                                                     |
 | debug     | Determines whether newman's run should be logged in details.                                                      |
+| mode     | Launch mode. Allowable values *DEFAULT* (by default) or *DEBUG*.                                                      |
 
 ### Report static attributes
 * To report attributes for suite you should use collection variables.
@@ -106,18 +108,6 @@ attributes | true | "string" - contains set of pairs *key:value* | "keyOne:value
 pm.environment.set("rp.attributes", "keyOne:valueOne;valueTwo;keyThree:valueThree");
 ```
 * Step doesn't support reporting with attributes
-
-To integrate with Sauce Labs just add attributes:
-
-```javascript
-[{
- "key": "SLID",
- "value": "# of the job in Sauce Labs"
-}, {
- "key": "SLDC",
- "value": "EU (EU or US)"
-}]
-```
 
 ### Report static description
 Both suites and tests support description. For reporting with description you should click on **Edit** in your collection

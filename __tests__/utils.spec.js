@@ -256,7 +256,8 @@ describe('utils', () => {
                     }
                 ],
                 rerun: true,
-                rerunOf: 'rerunOf'
+                rerunOf: 'rerunOf',
+                mode: 'DEBUG'
             };
 
             const startLaunchObject = utils.getStartLaunchObj(options);
