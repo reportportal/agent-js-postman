@@ -1,4 +1,4 @@
-# @reportportal/newman-reporter-agent-js-postman
+# @reportportal/agent-js-postman
 
 Newman runtime reporter for ReportPortal which provides information about collection run.
 [ReportPortal](http://reportportal.io/)<br>
