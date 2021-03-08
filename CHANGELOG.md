@@ -1,3 +1,5 @@
+
+## [5.0.0] - 2021-03-08
 ### Changed
 - The architecture of the agent-js-postman's reporting
 
