@@ -14,10 +14,20 @@
  *  limitations under the License.
  */
 
-'use strict';
-
-const Reporter = require('./reporter');
-
-module.exports = function (emitter, options, collectionRunOptions) {
-    return new Reporter(emitter, options, collectionRunOptions);
+module.exports = {
+    moduleFileExtensions: [
+        'js'
+    ],
+    testRegex: '/__tests__/.*\\.spec.(js)$',
+    collectCoverageFrom: [
+        './lib/**'
+    ],
+    coverageThreshold: {
+        global: {
+            branches: 80,
+            functions: 80,
+            lines: 80,
+            statements: 80
+        }
+    }
 };

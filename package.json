@@ -1,37 +1,51 @@
 {
-  "name": "@reportportal/newman-reporter-reportportal",
-  "version": "0.0.23",
-  "description": "Reportportal reporter for newman",
+  "name": "@reportportal/newman-reporter-agent-js-postman",
+  "version": "4.0.0",
+  "description": "ReportPortal reporter for newman",
   "keywords": [
+    "reportportal",
+    "reporters",
     "postman",
     "newman",
     "epam"
   ],
-  "homepage": "https://github.com/reportportal/agent-postman",
+  "contributors": [
+    {
+      "name": "Ilya Koshaleu",
+      "email": ""
+    }
+  ],
+  "homepage": "https://github.com/reportportal/agent-js-postman",
   "main": "index",
-  "author": "Ilya Koshaleu",
+  "author": "ReportPortal.io",
   "license": "Apache-2.0",
   "scripts": {
+    "test": "jest --detectOpenHandles --config ./jest.config.js",
+    "test:coverage": "jest --coverage",
     "lint": "eslint ./lib --quiet --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reportportal/agent-postman.git"
+    "url": "git+https://github.com/reportportal/agent-js-postman.git"
   },
   "dependencies": {
     "lodash": "^4.17.15",
-    "reportportal-client": "^5.2.3",
+    "@reportportal/client-javascript": "^5.0.3",
     "string_decoder": "^1.2.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-plugin-jsdoc": "^4.8.1",
-    "eslint-plugin-lodash": "^5.1.0"
+    "eslint-plugin-lodash": "^5.1.0",
+    "jest": "^25.3.0"
   },
   "bugs": {
-    "url": "https://github.com/reportportal/agent-postman/issues"
+    "url": "https://github.com/reportportal/agent-js-postman/issues"
   },
   "directories": {
     "lib": "lib"
+  },
+  "engines": {
+    "node": ">= 8.0.x"
   }
 }

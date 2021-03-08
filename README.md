@@ -1,34 +1,33 @@
-[![Build Status](https://travis-ci.org/reportportal/agent-postman.svg?branch=master)](https://travis-ci.org/reportportal/agent-postman)[![Code Coverage](https://codecov.io/gh/reportportal/agent-postman/branch/master/graph/badge.svg)](https://codecov.io/gh/reportportal/agent-postman)
-[![npm version](https://badge.fury.io/js/newman-reporter-reportportal.svg)](https://badge.fury.io/js/newman-reporter-reportportal)
+# @reportportal/agent-js-postman
 
-# newman-reporter-reportportal
+Newman runtime reporter for ReportPortal which provides information about collection run.
+[ReportPortal](http://reportportal.io/)<br>
+[ReportPortal on GitHub](https://github.com/reportportal)
 
-Newman runtime reporter for [EPAM report portal](https://github.com/reportportal/reportportal) which provides information about collection run.
-
-## Install
-
+### How to use
 The installation should be global if newman is installed globally, otherwise - local (replace -g from the command below with -S for a local installation).
 
 ```bash
-$ npm install -g @reportportal/newman-reporter-reportportal
+$ npm install -g @reportportal/newman-reporter-agent-js-postman
 ```
 
-## Usage
+### Usage
 
 There are two ways to enable this reporter - with command line or programmatically.
 
 #### With CLI
 
-To enable this reporter you have to specify `reportportal` in Newman's `-r` or `--reporters` option.
+To enable this reporter you have to specify `agent-js-postman` in Newman's `-r` or `--reporters` option.
 
 ```bash
 $ newman run https://postman-echo.com/status/200 \
-    -r @reportportal/reportportal \
-    --reporter-@reportportal/reportportal-debug=true \
-    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
-    --reporter-@reportportal/reportportal-project=PROJECT_NAME \
+    -r @reportportal/agent-js-postman \
+    --reporter-@reportportal/agent-js-postman-debug=true \
+    --reporter-@reportportal/agent-js-postman-endpoint=http://your-instance.com:8080/api/v1 \
+    --reporter-@reportportal/agent-js-postman-token=00000000-0000-0000-0000-000000000000 \
+    --reporter-@reportportal/agent-js-postman-launch=LAUNCH_NAME \
+    --reporter-@reportportal/agent-js-postman-project=PROJECT_NAME \
+    --reporter-@reportportal/agent-js-postman-description=LAUNCH_DESCRIPTION \
     -x
 ```
 
@@ -42,14 +41,25 @@ const newman = require("newman");
 newman.run(
     {
         collection: "./collections/newman-test_collection.json",
-        reporters: "@reportportal/reportportal",
+        reporters: "@reportportal/agent-js-postman",
         reporter: {
-            "@reportportal/reportportal": {
-                debug: true,
+            "@reportportal/agent-js-postman": {
                 endpoint: "http://your-instance.com:8080/api/v1",
                 token: "00000000-0000-0000-0000-000000000000",
                 launch: "LAUNCH_NAME",
-                project: "PROJECT_NAME"
+                project: "PROJECT_NAME",
+                description: "LAUNCH_DESCRIPTION",
+                attributes: [
+                    {
+                        "key": "launchKey",
+                        "value": "launchValue"
+                    },
+                    {
+                        "value": "launchValue"
+                    },
+                ],
+                mode: 'DEFAULT',
+                debug: true
             }
         }
     },
@@ -68,96 +78,109 @@ Both CLI and programmatic runs support following options:
 
 | Parameter | Description                                                                                                       |
 | --------- | ----------------------------------------------------------------------------------------------------------------- |
-| token     | User's Report Portal toke from which you want to send requests. It can be found on the profile page of this user. |
+| token     | User's Report Portal token from which you want to send requests. It can be found on the profile page of this user. |
 | endpoint  | URL of your server. For example 'https://server:8080/api/v1'.                                                     |
 | launch    | Name of launch at creation.                                                                                       |
-| project   | The name of the project in which the launches will be created.                                                    |
+| project   | The name of the project in which the launches will be created.                                                      |
+| description   | Text description of launch.                                                                                     |
+| rerun     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                  |
+| rerunOf   | UUID of launch you want to rerun. If not specified, report portal will update the latest launch with the same name.                                                                                     |
 | debug     | Determines whether newman's run should be logged in details.                                                      |
+| mode     | Launch mode. Allowable values *DEFAULT* (by default) or *DEBUG*.                                                      |
 
-## Docker
+### Report static attributes
+* To report attributes for suite you should use collection variables.
 
-This reporter can also be used inside of a docker container.
+VARIABLE | INITIAL VALUE | CURRENT VALUE
+--------- | ----------- | -----------
+rp.attributes | keySuiteOne:valueSuiteOne | keySuiteOne:valueSuiteOne
 
-### Using existing image
+* To report attributes for tests inside of Pre-request Script you should use the next method
 
-The docker image for this reporter is available for download from our docker hub. So, first of all you have to ensure that you have docker installed and running in your system. Otherwise, see <a href="https://docs.docker.com/installation/" target="_blank">installation guideline for
-you operating systems</a>.
+**pm.environment.set**
 
-#### Step 1
+Parameter | Required | Description | Examples
+--------- | ----------- | ----------- | -----------
+namespace | true | "string" - namespace, must be equal to the *rp.attributes* | "rp.attributes"
+attributes | true | "string" - contains set of pairs *key:value* | "keyOne:valueOne;valueTwo;keyThree:valueThree"
 
-Pull the <a href="https://hub.docker.com/r/reportportal/newman" target="_blank">newman docker image with installed reporter</a> from docker hub:
-
-```console
-$ docker pull reportportal/newman
+```javascript
+pm.environment.set("rp.attributes", "keyOne:valueOne;valueTwo;keyThree:valueThree");
 ```
+* Step doesn't support reporting with attributes
 
-#### Step 2
+### Report static description
+Both suites and tests support description. For reporting with description you should click on **Edit** in your collection
+ and in the description column enter the text you need
 
-Run newman commands on the image:
+* Step doesn't support reporting with description
 
-```bash
-$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda \
-    -r @reportportal/reportportal \
-    --reporter-@reportportal/reportportal-debug=true \
-    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
-    --reporter-@reportportal/reportportal-project=PROJECT_NAME \
-    -x
+### Finish with status
+**status** must be equal to one of the following values: **passed, failed, stopped, skipped, interrupted, cancelled, info, warn**.<br/>
+
+* To finish launch/suite with status you should use collection variables
+
+VARIABLE | INITIAL VALUE | CURRENT VALUE
+--------- | ----------- | -----------
+rp.launchStatus (for launch)<br/>rp.status (for suite) | your status | your status
+
+* To finish tests you should use environment variables inside of Pre-request Script
+```javascript
+pm.environment.set("rp.status", "status");
 ```
-
-If you want to use this reporter for a specific collection JSON file, you have to mount a directory with this file:
-
-```bash
-$ docker run -v ~/collections:/etc/newman -t reportportal/newman run "example_postman-collection.json" \
-    -r @reportportal/reportportal \
-    --reporter-@reportportal/reportportal-debug=true \
-    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
-    --reporter-@reportportal/reportportal-project=PROJECT_NAME \
-    -x
+* To finish steps with statuses you should use local variables
+```javascript
+pm.variables.set("rp.status", "status");
 ```
+**It is important that the code line above has to start from the new line and you shouldn't forget about semicolon after it**
 
-### Build the docker image from this repository
+For both tests or steps, this is true
 
-**Step 1:**
+Parameter | Required | Description | Examples
+--------- | ----------- | ----------- | -----------
+namespace | true | "string" - namespace, must be equal to the *rp.status* | "rp.status"
+status | true | "string" - status | "passed"
 
-Clone this repository:
+### Logging
+You can use the following methods to report logs with different log levels:
 
-```bash
-$ git clone https://github.com/reportportal/agent-postman
+* console.log("launch/suite/test", "message");
+* console.error("launch/suite/test", "message");
+* console.debug("launch/suite/test", "message");
+* console.warn("launch/suite/test", "message");
+* console.info("launch/suite/test", "message");
+
+Parameter | Required | Description | Examples
+--------- | ----------- | ----------- | -----------
+namespace | true | "string" - namespace, must be equal to the *launch, suite or test* depends on where you want to report | "test"
+message | true | "string" - message | "your message"
+
+* Step doesn't support logs reporting
+
+### Report test case id
+* To report suite with test case id you should use collection variables
+
+VARIABLE | INITIAL VALUE | CURRENT VALUE
+--------- | ----------- | -----------
+rp.testCaseId | yourSuiteTestCaseId | yourSuiteTestCaseId
+
+* To report tests with test case id you should use environment variables inside of Pre-request Script
+```javascript
+pm.environment.set("rp.testCaseId", "yourTestCaseId");
 ```
-
-**Step 2:**
-
-Build the image:
-
-```bash
-$ docker build -t reportportal/newman --build-arg VERSION="full semver version".
+* To report steps with test case id you should use local variables
+```javascript
+pm.variables.set("rp.testCaseId", "stepTestCaseId");
 ```
+**It is important that the code line above has to start from the new line and you shouldn't forget about semicolon after it**
 
-**Step 3:**
+For both tests or steps, this is true
 
-Run a collection using the newman image:
-
-```bash
-$ docker run -t reportportal/newman run https://www.getpostman.com/collections/8a0c9bc08f062d12dcda \
-    -r @reportportal/reportportal \
-    --reporter-@reportportal/reportportal-debug=true \
-    --reporter-@reportportal/reportportal-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-@reportportal/reportportal-token=00000000-0000-0000-0000-000000000000 \
-    --reporter-@reportportal/reportportal-launch=LAUNCH_NAME \
-    --reporter-@reportportal/reportportal-project=PROJECT_NAME \
-    -x
-```
+Parameter | Required | Description | Examples
+--------- | ----------- | ----------- | -----------
+namespace | true | "string" - namespace, must be equal to the *rp.testCaseId* | "rp.testCaseId"
+testCaseId | true | "string" - test case id value | "yourTestCaseId"
 
 # Copyright Notice
-
-Licensed under the [Apache License v2.0](LICENSE)
-
-# Contribution and Support
-
-<img src="img/ahold-delhaize-logo-green.jpg" width="250">
-
-**Implemented and supported by Ahold Delheize**
+Licensed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
+license (see the LICENSE.txt file).
