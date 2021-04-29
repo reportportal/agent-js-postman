@@ -267,46 +267,257 @@ describe('reporter', () => {
         });
     });
 
-    describe('onBeforeDone', () => {
-        let finishSteps;
-        let finishTest;
-        let finishSuite;
-
-        beforeEach(() => {
-            finishSteps = jest.spyOn(reporter, 'finishSteps').mockImplementation(() => {});
-            finishTest = jest.spyOn(reporter, 'finishTest').mockImplementation(() => {});
-            finishSuite = jest.spyOn(reporter, 'finishSuite').mockImplementation(() => {});
-        });
-
-        afterEach(() => {
-            finishSteps.mockRestore();
-            finishTest.mockRestore();
-            finishSuite.mockRestore();
-        });
-
-        test('should call finishSteps, finishTest and finishSuite with parameters', () => {
-            const expectedTestObj = { steps: [], testId: 'startTestItem' };
+    describe('finishStep', () => {
+        test('should not call client.finishTestItem if testObj is empty', () => {
             reporter.collectionMap = new Map([['ref', {
                 testId: 'startTestItem',
                 steps: []
             }]]);
 
-            reporter.onBeforeDone(null, {
-                summary: { run: 'run' }
-            });
+            reporter.finishStep(null, { cursor: { ref: 'stepRef' } });
 
-            expect(reporter.finishSteps).toHaveBeenCalledTimes(1);
-            expect(reporter.finishTest).toHaveBeenCalledTimes(1);
+            expect(reporter.client.finishTestItem).not.toHaveBeenCalled();
+        });
+
+        test('should not call client.finishTestItem if there is no appropriate step', () => {
+            reporter.collectionMap = new Map([['ref', {
+                testId: 'startTestItem',
+                steps: [{ name: 'Step' }]
+            }]]);
+
+            reporter.finishStep(null, { cursor: { ref: 'ref' }, assertion: 'Step name' });
+
+            expect(reporter.client.finishTestItem).not.toHaveBeenCalled();
+        });
+
+        test('should call logMessage and client.finishTestItem if there is an error, status is failed', () => {
+            reporter.collectionMap = new Map([['ref', {
+                testId: 'testId',
+                steps: [{
+                    stepId: 'stepId',
+                    requestId: 'id',
+                    name: 'Step name'
+                }]
+            }]]);
+            jest.spyOn(reporter, 'logMessage');
+
+            reporter.finishStep({ message: 'error' }, { cursor: { ref: 'ref' }, assertion: 'Step name' });
+
+            expect(reporter.logMessage).toHaveBeenCalledWith('stepId', 'error', 'ERROR');
+            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('stepId', { status: 'FAILED' });
+            expect(reporter.collectionMap.get('ref')).toEqual({ testId: 'testId', steps: [] });
+        });
+
+        test('should call client.finishTestItem with status passed if there is no error', () => {
+            reporter.collectionMap = new Map([['ref', {
+                testId: 'testId',
+                steps: [{
+                    stepId: 'stepId',
+                    requestId: 'id',
+                    name: 'Step name'
+                }]
+            }]]);
+            jest.spyOn(reporter, 'logMessage');
+
+            reporter.finishStep(null, { cursor: { ref: 'ref' }, assertion: 'Step name' });
+
+            expect(reporter.logMessage).not.toHaveBeenCalled();
+            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('stepId', { status: 'PASSED' });
+            expect(reporter.collectionMap.get('ref')).toEqual({ testId: 'testId', steps: [] });
+        });
+    });
+
+    describe('finishAllSteps', () => {
+        test('should not call failAllSteps if there is an error', () => {
+            jest.spyOn(reporter, 'failAllSteps');
+
+            expect(() => reporter.finishAllSteps('error')).toThrowError('error');
+            expect(reporter.failAllSteps).not.toHaveBeenCalled();
+        });
+
+        test('should not call failAllSteps if testResult doesn\'t contain execution with error', () => {
+            const testObj = {
+                testId: 'testId',
+                steps: [
+                    {
+                        stepId: 'stepId',
+                        requestId: 'id',
+                        name: 'Step name'
+                    },
+                    {
+                        stepId: 'stepIdTwo',
+                        requestId: 'idTwo',
+                        name: 'Step name two'
+                    }
+                ]
+            };
+            const testResultObj = {
+                cursor: { ref: 'ref' },
+                executions: []
+            };
+            reporter.collectionMap = new Map([['ref', testObj]]);
+            jest.spyOn(reporter, 'failAllSteps');
+
+            reporter.finishAllSteps(null, testResultObj);
+
+            expect(reporter.failAllSteps).not.toHaveBeenCalled();
+        });
+
+        test('should call failAllSteps with parameters if testResult contains execution with error', () => {
+            const testObj = {
+                testId: 'testId',
+                steps: [
+                    {
+                        stepId: 'stepId',
+                        requestId: 'id',
+                        name: 'Step name'
+                    },
+                    {
+                        stepId: 'stepIdTwo',
+                        requestId: 'idTwo',
+                        name: 'Step name two'
+                    }
+                ]
+            };
+            const testResultObj = {
+                cursor: { ref: 'ref' },
+                executions: [{ error: { message: 'error' } }]
+            };
+            reporter.collectionMap = new Map([['ref', testObj]]);
+            jest.spyOn(reporter, 'failAllSteps');
+
+            reporter.finishAllSteps(null, testResultObj);
+
+            expect(reporter.failAllSteps).toHaveBeenCalledWith(testObj, 'error');
+        });
+    });
+
+    describe('onRequest', () => {
+        test('should update collectionMap with error and response values if testObj exists', () => {
+            const testObj = {
+                testId: 'testId',
+                steps: []
+            };
+            const expectedTestObj = {
+                testId: 'testId',
+                steps: [],
+                response: 'response',
+                error: 'error'
+            };
+            reporter.collectionMap = new Map([['ref', testObj]]);
+
+            reporter.onRequest('error', { cursor: { ref: 'ref' }, response: 'response' });
+
+            expect(reporter.collectionMap.get('ref')).toEqual(expectedTestObj);
+        });
+
+        test('should not update collectionMap with error and response values if testObj doesn\'t exist', () => {
+            const testObj = {
+                testId: 'testId',
+                steps: []
+            };
+            reporter.collectionMap = new Map([['ref', testObj]]);
+
+            reporter.onRequest('error', { cursor: { ref: 'refRequest' }, response: 'response' });
+
+            expect(reporter.collectionMap.get('ref')).toEqual(testObj);
+        });
+    });
+
+    describe('finishTest', () => {
+        let sendResponseLogs;
+
+        beforeEach(() => {
+            sendResponseLogs = jest.spyOn(reporter, 'sendResponseLogs').mockImplementation(() => {});
+        });
+
+        afterEach(() => {
+            sendResponseLogs.mockRestore();
+        });
+
+        test('should not call client.finishTestItem if there is an error', () => {
+            expect(() => reporter.finishTest('error')).toThrowError('error');
+            expect(reporter.client.finishTestItem).not.toHaveBeenCalled();
+        });
+
+        test('should not call client.finishTestItem if testObj doesn\'t exist', () => {
+            const testObj = {
+                testId: 'testId',
+                steps: [],
+                error: undefined
+            };
+            reporter.collectionMap = new Map([['ref', testObj]]);
+
+            reporter.finishTest(null, { cursor: { ref: 'refRequest' } });
+
+            expect(reporter.client.finishTestItem).not.toHaveBeenCalled();
+        });
+
+        test('should call logMessage with ERROR and client.finishTestItem with status failed if testObj has error value', () => {
+            const testObj = {
+                testId: 'testId',
+                steps: [],
+                error: { message: 'error' }
+            };
+            reporter.collectionMap = new Map([['ref', testObj]]);
+            jest.spyOn(reporter, 'logMessage');
+
+            reporter.finishTest(null, { cursor: { ref: 'ref' } });
+
+            expect(reporter.logMessage).toHaveBeenCalledWith('testId', 'error', 'ERROR');
+            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('testId', { status: 'FAILED' });
+        });
+
+        test('should call sendResponseLogs and client.finishTestItem with status passed if testObj has response', () => {
+            const testObj = {
+                testId: 'testId',
+                steps: [],
+                error: undefined,
+                response: { headers: { members: ['members'] } }
+            };
+            reporter.collectionMap = new Map([['ref', testObj]]);
+
+            reporter.finishTest(null, { cursor: { ref: 'ref' } });
+
+            expect(reporter.sendResponseLogs).toHaveBeenCalledWith('testId', { headers: { members: ['members'] } });
+            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('testId', { status: 'PASSED' });
+        });
+
+        test('should not call sendResponseLogs if testObj hasn\'t response', () => {
+            const testObj = {
+                testId: 'testId',
+                steps: [],
+                error: undefined
+            };
+            reporter.collectionMap = new Map([['ref', testObj]]);
+
+            reporter.finishTest(null, { cursor: { ref: 'ref' } });
+
+            expect(reporter.sendResponseLogs).not.toHaveBeenCalledWith();
+            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('testId', { status: 'PASSED' });
+        });
+    });
+
+    describe('onBeforeDone', () => {
+        let finishSuite;
+
+        beforeEach(() => {
+            finishSuite = jest.spyOn(reporter, 'finishSuite').mockImplementation(() => {});
+        });
+
+        afterEach(() => {
+            finishSuite.mockRestore();
+        });
+
+        test('should call finishSuite', () => {
+            reporter.onBeforeDone();
+
             expect(reporter.finishSuite).toHaveBeenCalledTimes(1);
-            expect(reporter.finishSteps).toHaveBeenCalledWith('ref', expectedTestObj, 'run');
-            expect(reporter.finishTest).toHaveBeenCalledWith('ref', expectedTestObj, 'run');
             expect(reporter.finishSuite).toHaveBeenCalledWith();
         });
 
-        test('should not call finishTest, finishSteps and finishSuite if there is an error', () => {
+        test('should not call finishSuite if there is an error', () => {
             expect(() => reporter.onBeforeDone('error')).toThrowError('error');
-            expect(reporter.finishSteps).not.toHaveBeenCalled();
-            expect(reporter.finishTest).not.toHaveBeenCalled();
             expect(reporter.finishSuite).not.toHaveBeenCalled();
         });
     });
@@ -498,87 +709,6 @@ describe('reporter', () => {
         });
     });
 
-    describe('finishSteps', () => {
-        test('should call failAllSteps with parameters if if there is an error in a test-scripts', () => {
-            const testObj = {
-                testId: 'startTestItem',
-                steps: [{
-                    stepId: 'startTestItem',
-                    requestId: 'id',
-                    name: 'step name'
-                }]
-            };
-            const runObj = {
-                executions: [{ id: 'id' }],
-                failures: [{
-                    at: 'test-script',
-                    cursor: {
-                        ref: 'ref'
-                    },
-                    error: {
-                        message: 'scriptFailureError'
-                    }
-                }]
-            };
-            jest.spyOn(reporter, 'failAllSteps');
-            jest.spyOn(reporter, 'sendResponseLogs').mockImplementation(() => {});
-
-            reporter.finishSteps('ref', testObj, runObj);
-
-            expect(reporter.failAllSteps).toHaveBeenCalledWith(testObj, 'scriptFailureError');
-        });
-
-        test('should call logMessage and client.finishTestItem if there are failures, status is failed', () => {
-            const testObj = {
-                testId: 'startTestItem',
-                steps: [{
-                    stepId: 'startTestItem',
-                    requestId: 'id',
-                    name: 'step name'
-                }]
-            };
-            const runObj = {
-                executions: [{ id: 'id' }],
-                failures: [{
-                    cursor: {
-                        ref: 'ref'
-                    },
-                    error: {
-                        test: 'step name',
-                        message: 'error'
-                    }
-                }]
-            };
-            jest.spyOn(reporter, 'logMessage');
-            jest.spyOn(reporter, 'sendResponseLogs').mockImplementation(() => {});
-
-            reporter.finishSteps('ref', testObj, runObj);
-
-            expect(reporter.logMessage).toHaveBeenCalledWith('startTestItem', 'error', 'ERROR');
-            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'FAILED' });
-        });
-
-        test('should call client.finishTestItem with status passed', () => {
-            const testObj = {
-                testId: 'startTestItem',
-                steps: [{
-                    stepId: 'startTestItem',
-                    requestId: 'id',
-                    name: 'step name'
-                }]
-            };
-            const runObj = {
-                executions: [{ id: 'id' }],
-                failures: []
-            };
-            jest.spyOn(reporter, 'sendResponseLogs').mockImplementation(() => {});
-
-            reporter.finishSteps('ref', testObj, runObj);
-
-            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'PASSED' });
-        });
-    });
-
     describe('failAllSteps', () => {
         test('should call client.finishTestItem with status failed and logMessage with error', () => {
             const testObj = {
@@ -592,86 +722,6 @@ describe('reporter', () => {
 
             expect(reporter.logMessage).toHaveBeenCalledWith('startTestItem', 'error', 'ERROR');
             expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'FAILED' });
-        });
-    });
-
-    describe('finishTest', () => {
-        test('should call logMessage with ERROR and client.finishTestItem with status failed if there is requestError', () => {
-            const testObj = {
-                testId: 'startTestItem',
-                requestId: 'id'
-            };
-            const runObj = {
-                executions: [{
-                    id: 'id',
-                    cursor: {
-                        httpRequestId: 'id'
-                    },
-                    requestError: {
-                        message: 'requestError'
-                    }
-                }]
-            };
-            jest.spyOn(reporter, 'logMessage');
-
-            reporter.finishTest('ref', testObj, runObj);
-
-            expect(reporter.logMessage).toHaveBeenCalledWith('startTestItem', 'requestError', 'ERROR');
-            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'FAILED' });
-        });
-
-        test('should call sendResponseLogs and client.finishTestItem with status failed if cursor.ref is the same as reference', () => {
-            const testObj = {
-                testId: 'startTestItem',
-                requestId: 'id'
-            };
-            const runObj = {
-                failures: [{
-                    cursor: {
-                        ref: 'ref'
-                    }
-                }],
-                executions: [{
-                    id: 'id',
-                    cursor: {
-                        httpRequestId: 'id'
-                    },
-                    response: 'response'
-                }]
-            };
-            jest.spyOn(reporter, 'sendResponseLogs');
-
-            reporter.finishTest('ref', testObj, runObj);
-
-            expect(reporter.sendResponseLogs).toHaveBeenCalledWith('startTestItem', 'response');
-            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'FAILED' });
-        });
-
-        test('should call sendResponseLogs and client.finishTestItem with status passed if cursor.ref is not the same as reference', () => {
-            const testObj = {
-                testId: 'startTestItem',
-                requestId: 'id'
-            };
-            const runObj = {
-                failures: [{
-                    cursor: {
-                        ref: 'refTwo'
-                    }
-                }],
-                executions: [{
-                    id: 'id',
-                    cursor: {
-                        httpRequestId: 'id'
-                    },
-                    response: 'response'
-                }]
-            };
-            jest.spyOn(reporter, 'sendResponseLogs');
-
-            reporter.finishTest('ref', testObj, runObj);
-
-            expect(reporter.sendResponseLogs).toHaveBeenCalledWith('startTestItem', 'response');
-            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('startTestItem', { status: 'PASSED' });
         });
     });
 
