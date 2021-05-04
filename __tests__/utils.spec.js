@@ -225,6 +225,34 @@ describe('utils', () => {
             expect(clientInitObject).toEqual(options);
         });
 
+        test('should return client with CLI options', () => {
+            const options = {
+                reportportalAgentJsPostmanToken: 'token',
+                reportportalAgentJsPostmanEndpoint: 'endpoint',
+                reportportalAgentJsPostmanLaunch: 'launch',
+                reportportalAgentJsPostmanProject: 'project',
+                reportportalAgentJsPostmanRerun: true,
+                reportportalAgentJsPostmanRerunOf: 'rerunOf',
+                reportportalAgentJsPostmanDescription: 'description',
+                reportportalAgentJsPostmanAttributes: 'attributes',
+                reportportalAgentJsPostmanDebug: true
+            };
+
+            const clientInitObject = utils.getClientInitObject(options);
+
+            expect(clientInitObject).toEqual({
+                token: 'token',
+                endpoint: 'endpoint',
+                launch: 'launch',
+                project: 'project',
+                rerun: true,
+                rerunOf: 'rerunOf',
+                description: 'description',
+                attributes: 'attributes',
+                debug: true
+            });
+        });
+
         test('should return client init object with default launch name', () => {
             const options = {
                 token: 'token',
@@ -275,6 +303,30 @@ describe('utils', () => {
                     system: true
                 }]
             }));
+        });
+
+        test('should return start launch object with CLI options', () => {
+            const options = {
+                reportportalAgentJsPostmanLaunch: 'launch name',
+                reportportalAgentJsPostmanDescription: 'description',
+                reportportalAgentJsPostmanRerun: true,
+                reportportalAgentJsPostmanRerunOf: 'rerunOf'
+            };
+
+            const startLaunchObject = utils.getStartLaunchObj(options);
+
+            expect(startLaunchObject).toEqual({
+                launch: 'launch name',
+                description: 'description',
+                attributes: [{
+                    key: 'agent',
+                    value: `${pjson.name}|${pjson.version}`,
+                    system: true
+                }],
+                rerun: true,
+                rerunOf: 'rerunOf',
+                mode: undefined
+            });
         });
 
         test('should return start launch object with default launch name', () => {
