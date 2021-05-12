@@ -211,6 +211,18 @@ describe('reporter', () => {
             expect(reporter.collectionMap).toEqual(expectedCollectionMap);
         });
 
+        test('should not call client.startTestItem if test name is null', () => {
+            reporter.onBeforeRequest(null, {
+                item: { id: 'id' },
+                cursor: { ref: 'ref', iteration: 0 },
+                request: {
+                    description: { content: 'description' }
+                }
+            });
+
+            expect(reporter.client.startTestItem).not.toHaveBeenCalled();
+        });
+
         test('should not call client.startTestItem if there is an error', () => {
             expect(() => reporter.onBeforeRequest('error')).toThrowError('error');
             expect(reporter.client.startTestItem).not.toHaveBeenCalled();
@@ -584,13 +596,19 @@ describe('reporter', () => {
     });
 
     describe('getTestName', () => {
+        test('should return null if test name as parameter is not defined', () => {
+            const testName = reporter.getTestName({ cursor: { iteration: 0 }, item: { } });
+
+            expect(testName).toEqual(null);
+        });
+
         test('should return test name with iteration number if iterationCount is not undefined', () => {
             const expectedTestName = 'name #1';
             reporter.collectionRunOptions.iterationCount = 4;
 
             const testName = reporter.getTestName({ cursor: { iteration: 0 }, item: { name: 'name' } });
 
-            expect(expectedTestName).toEqual(testName);
+            expect(testName).toEqual(expectedTestName);
         });
 
         test('should return test name without iteration number if iterationCount is undefined', () => {
@@ -599,7 +617,7 @@ describe('reporter', () => {
 
             const testName = reporter.getTestName({ cursor: { iteration: 0 }, item: { name: 'name' } });
 
-            expect(expectedTestName).toEqual(testName);
+            expect(testName).toEqual(expectedTestName);
         });
     });
 
