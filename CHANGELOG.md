@@ -1,3 +1,7 @@
+### Fixed
+- [#53](https://github.com/reportportal/agent-js-postman/issues/43) Fix working with CLI.
+- [#31](https://github.com/reportportal/agent-js-postman/issues/31) Fix reporting attributes for launch with CLI.
+- [#8](https://github.com/reportportal/agent-js-postman/issues/8) Fix error "Cannot read property 'requestError' of undefined".
 
 ## [5.0.0] - 2021-03-08
 ### Changed

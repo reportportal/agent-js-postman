@@ -82,6 +82,45 @@ describe('utils', () => {
         });
     });
 
+    describe('getArrAttributesFromString', () => {
+        test('should return correct array of attributes', () => {
+            const parameter = 'keyOne:valueOne';
+            const expectedAttributes = [
+                {
+                    key: 'keyOne',
+                    value: 'valueOne'
+                }
+            ];
+
+            const attributes = utils.getArrAttributesFromString(parameter);
+
+            expect(attributes).toEqual(expectedAttributes);
+        });
+
+        test('should return correct array of attributes, key should be null', () => {
+            const parameter = 'keyOne:valueOne;valueTwo';
+            const expectedAttributes = [
+                {
+                    key: 'keyOne',
+                    value: 'valueOne'
+                }, {
+                    key: null,
+                    value: 'valueTwo'
+                }
+            ];
+
+            const attributes = utils.getArrAttributesFromString(parameter);
+
+            expect(attributes).toEqual(expectedAttributes);
+        });
+
+        test('should return empty array of attributes, if there is no parameter', () => {
+            const attributes = utils.getArrAttributesFromString();
+
+            expect(attributes).toEqual([]);
+        });
+    });
+
     describe('getAttributes', () => {
         test('should return correct array of attributes', () => {
             const variables = {
@@ -166,7 +205,7 @@ describe('utils', () => {
                 ]
             };
 
-            const testCaseId = utils.getCollectionVariablesByKey( 'testCaseId', variables);
+            const testCaseId = utils.getCollectionVariablesByKey('testCaseId', variables);
 
             expect(testCaseId).toEqual('testCaseId');
         });
@@ -234,7 +273,7 @@ describe('utils', () => {
                 reportportalAgentJsPostmanRerun: true,
                 reportportalAgentJsPostmanRerunOf: 'rerunOf',
                 reportportalAgentJsPostmanDescription: 'description',
-                reportportalAgentJsPostmanAttributes: 'attributes',
+                reportportalAgentJsPostmanAttributes: 'attribute',
                 reportportalAgentJsPostmanDebug: true
             };
 
@@ -248,7 +287,7 @@ describe('utils', () => {
                 rerun: true,
                 rerunOf: 'rerunOf',
                 description: 'description',
-                attributes: 'attributes',
+                attributes: [{ key: null, value: 'attribute' }],
                 debug: true
             });
         });
