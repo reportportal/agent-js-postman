@@ -28,6 +28,7 @@ $ newman run https://postman-echo.com/status/200 \
     --reporter-@reportportal/agent-js-postman-launch=LAUNCH_NAME \
     --reporter-@reportportal/agent-js-postman-project=PROJECT_NAME \
     --reporter-@reportportal/agent-js-postman-description=LAUNCH_DESCRIPTION \
+    --reporter-@reportportal/agent-js-postman-attributes=launchKey:launchValue;launchValueTwo \
     -x
 ```
 
@@ -83,6 +84,7 @@ Both CLI and programmatic runs support following options:
 | launch    | Name of launch at creation.                                                                                       |
 | project   | The name of the project in which the launches will be created.                                                      |
 | description   | Text description of launch.                                                                                     |
+| attributes   | Attributes of launch.<br/> Programmatically - [{ "key": "YourKey", "value": "YourValue" }] <br/> with CLI - "YourKey:YourValue;YourValueTwo"                                                                                  |
 | rerun     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                  |
 | rerunOf   | UUID of launch you want to rerun. If not specified, report portal will update the latest launch with the same name.                                                                                     |
 | debug     | Determines whether newman's run should be logged in details.                                                      |

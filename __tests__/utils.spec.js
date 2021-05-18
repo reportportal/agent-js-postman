@@ -82,6 +82,45 @@ describe('utils', () => {
         });
     });
 
+    describe('getArrAttributesFromString', () => {
+        test('should return correct array of attributes', () => {
+            const parameter = 'keyOne:valueOne';
+            const expectedAttributes = [
+                {
+                    key: 'keyOne',
+                    value: 'valueOne'
+                }
+            ];
+
+            const attributes = utils.getArrAttributesFromString(parameter);
+
+            expect(attributes).toEqual(expectedAttributes);
+        });
+
+        test('should return correct array of attributes, key should be null', () => {
+            const parameter = 'keyOne:valueOne;valueTwo';
+            const expectedAttributes = [
+                {
+                    key: 'keyOne',
+                    value: 'valueOne'
+                }, {
+                    key: null,
+                    value: 'valueTwo'
+                }
+            ];
+
+            const attributes = utils.getArrAttributesFromString(parameter);
+
+            expect(attributes).toEqual(expectedAttributes);
+        });
+
+        test('should return empty array of attributes, if there is no parameter', () => {
+            const attributes = utils.getArrAttributesFromString();
+
+            expect(attributes).toEqual([]);
+        });
+    });
+
     describe('getAttributes', () => {
         test('should return correct array of attributes', () => {
             const variables = {
@@ -166,7 +205,7 @@ describe('utils', () => {
                 ]
             };
 
-            const testCaseId = utils.getCollectionVariablesByKey( 'testCaseId', variables);
+            const testCaseId = utils.getCollectionVariablesByKey('testCaseId', variables);
 
             expect(testCaseId).toEqual('testCaseId');
         });
@@ -225,6 +264,34 @@ describe('utils', () => {
             expect(clientInitObject).toEqual(options);
         });
 
+        test('should return client with CLI options', () => {
+            const options = {
+                reportportalAgentJsPostmanToken: 'token',
+                reportportalAgentJsPostmanEndpoint: 'endpoint',
+                reportportalAgentJsPostmanLaunch: 'launch',
+                reportportalAgentJsPostmanProject: 'project',
+                reportportalAgentJsPostmanRerun: true,
+                reportportalAgentJsPostmanRerunOf: 'rerunOf',
+                reportportalAgentJsPostmanDescription: 'description',
+                reportportalAgentJsPostmanAttributes: 'attribute',
+                reportportalAgentJsPostmanDebug: true
+            };
+
+            const clientInitObject = utils.getClientInitObject(options);
+
+            expect(clientInitObject).toEqual({
+                token: 'token',
+                endpoint: 'endpoint',
+                launch: 'launch',
+                project: 'project',
+                rerun: true,
+                rerunOf: 'rerunOf',
+                description: 'description',
+                attributes: [{ key: null, value: 'attribute' }],
+                debug: true
+            });
+        });
+
         test('should return client init object with default launch name', () => {
             const options = {
                 token: 'token',
@@ -275,6 +342,30 @@ describe('utils', () => {
                     system: true
                 }]
             }));
+        });
+
+        test('should return start launch object with CLI options', () => {
+            const options = {
+                reportportalAgentJsPostmanLaunch: 'launch name',
+                reportportalAgentJsPostmanDescription: 'description',
+                reportportalAgentJsPostmanRerun: true,
+                reportportalAgentJsPostmanRerunOf: 'rerunOf'
+            };
+
+            const startLaunchObject = utils.getStartLaunchObj(options);
+
+            expect(startLaunchObject).toEqual({
+                launch: 'launch name',
+                description: 'description',
+                attributes: [{
+                    key: 'agent',
+                    value: `${pjson.name}|${pjson.version}`,
+                    system: true
+                }],
+                rerun: true,
+                rerunOf: 'rerunOf',
+                mode: undefined
+            });
         });
 
         test('should return start launch object with default launch name', () => {
