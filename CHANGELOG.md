@@ -1,3 +1,5 @@
+
+## [5.0.1] - 2021-05-18
 ### Fixed
 - [#53](https://github.com/reportportal/agent-js-postman/issues/43) Fix working with CLI.
 - [#31](https://github.com/reportportal/agent-js-postman/issues/31) Fix reporting attributes for launch with CLI.
