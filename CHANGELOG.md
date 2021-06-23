@@ -1,3 +1,5 @@
+
+## [5.0.2] - 2021-06-23
 ### Updated
 - `@reportportal/client-javascript` version to the latest
 
