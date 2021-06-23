@@ -1,3 +1,8 @@
+### Updated
+- `@reportportal/client-javascript` version to the latest
+
+### Added
+- `restClientConfig` configuration property support (more details in [client-javascript](https://github.com/reportportal/client-javascript))
 
 ## [5.0.1] - 2021-05-18
 ### Fixed
