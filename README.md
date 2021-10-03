@@ -71,6 +71,17 @@ newman.run(
         console.log("collection run complete!");
     }
 );
+
+// To run several collections
+// Note, this will create multiple launches that you can merge into one manually via the UI
+fs.readdir('./collections_folder_path', (err, files) => {
+    if (err) {
+        throw err;
+    }
+    files.forEach((file) => {
+        // setup newman.run()
+    });
+});
 ```
 
 #### Options
@@ -88,7 +99,7 @@ Both CLI and programmatic runs support following options:
 | rerun     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                  |
 | rerunOf   | UUID of launch you want to rerun. If not specified, report portal will update the latest launch with the same name.                                                                                     |
 | debug     | Determines whether newman's run should be logged in details.                                                      |
-| mode     | Launch mode. Allowable values *DEFAULT* (by default) or *DEBUG*. 
+| mode     | Launch mode. Allowable values *DEFAULT* (by default) or *DEBUG*.
 | restClientConfig | The object with `agent` property for configure [http(s)](https://nodejs.org/api/https.html#https_https_request_url_options_callback) client, may contain other client options eg. `timeout`. |
 
 ### Report static attributes
