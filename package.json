@@ -45,6 +45,9 @@
   "directories": {
     "lib": "lib"
   },
+  "files": [
+    "/lib"
+  ],
   "engines": {
     "node": ">= 8.0.x"
   }
