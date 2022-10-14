@@ -1,3 +1,6 @@
+### Fixed
+- [#82](https://github.com/reportportal/agent-js-postman/issues/82) Fix checks of a failure array.
+
 ### Changed
 - Package size reduced
 
