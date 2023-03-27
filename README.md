@@ -1,8 +1,9 @@
 # @reportportal/agent-js-postman
 
-Newman runtime reporter for ReportPortal which provides information about collection run.
-[ReportPortal](http://reportportal.io/)<br>
-[ReportPortal on GitHub](https://github.com/reportportal)
+Agent to integrate Postman (based on Newman collection runner) with ReportPortal.
+* More about [Postman](https://www.postman.com/)
+* More about [Newman](https://github.com/postmanlabs/newman)
+* More about [ReportPortal](http://reportportal.io/)
 
 ### How to use
 The installation should be global if newman is installed globally, otherwise - local (replace -g from the command below with -S for a local installation).
