@@ -1,3 +1,11 @@
+### Fixed
+- [#82](https://github.com/reportportal/agent-js-postman/issues/82) Fix checks of a failure array.
+- Security vulnerabilities
+### Changed
+- Package size reduced
+- Actualized dependencies
+### Added
+- The ability to mark skipped tests as not to be investigated using the `skippedIssue` flag
 
 ## [5.0.2] - 2021-06-23
 ### Updated

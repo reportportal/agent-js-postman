@@ -29,8 +29,7 @@ describe('reporter', () => {
         };
         jest.spyOn(utils, 'getCollectionPath').mockImplementation(() => 'collectionPath');
 
-        reporter = new Reporter(emitter, options, {});
-        reporter.client = new RPClient();
+        reporter = new Reporter(emitter, options, {}, RPClient);
         reporter.launchObj.tempId = 'startLaunch';
     });
 

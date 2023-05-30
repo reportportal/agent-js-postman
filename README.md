@@ -1,8 +1,9 @@
 # @reportportal/agent-js-postman
 
-Newman runtime reporter for ReportPortal which provides information about collection run.
-[ReportPortal](http://reportportal.io/)<br>
-[ReportPortal on GitHub](https://github.com/reportportal)
+Agent to integrate Postman (based on Newman collection runner) with ReportPortal.
+* More about [Postman](https://www.postman.com/)
+* More about [Newman](https://github.com/postmanlabs/newman)
+* More about [ReportPortal](http://reportportal.io/)
 
 ### How to use
 The installation should be global if newman is installed globally, otherwise - local (replace -g from the command below with -S for a local installation).
@@ -101,7 +102,7 @@ Both CLI and programmatic runs support following options:
 | debug     | Determines whether newman's run should be logged in details.                                                      |
 | mode     | Launch mode. Allowable values *DEFAULT* (by default) or *DEBUG*.
 | restClientConfig | The object with `agent` property for configure [http(s)](https://nodejs.org/api/https.html#https_https_request_url_options_callback) client, may contain other client options eg. `timeout`. |
-
+skippedIssue | *Default: true.* ReportPortal provides feature to mark skipped tests as not 'To Investigate' items on WS side.<br> Parameter could be equal boolean values:<br> *TRUE* - skipped tests considered as issues and will be marked as 'To Investigate' on Report Portal.<br> *FALSE* - skipped tests will not be marked as 'To Investigate' on application.
 ### Report static attributes
 * To report attributes for suite you should use collection variables.
 
