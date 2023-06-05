@@ -756,7 +756,7 @@ describe('reporter', () => {
         test('should call client.finishTestItem with correct parameters', () => {
             reporter.finishSuite();
 
-            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('parentId', {});
+            expect(reporter.client.finishTestItem).toHaveBeenCalledWith('parentId', { "status": "PASSED", });
         });
     });
 });
