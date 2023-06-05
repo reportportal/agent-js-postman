@@ -1,3 +1,5 @@
+
+## [5.0.4] - 2023-06-05
 ### Fixed
 - [#95](https://github.com/reportportal/agent-js-postman/issues/95) Issue with package installation.
 ### Changed
