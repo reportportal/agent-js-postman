@@ -1,3 +1,7 @@
+### Fixed
+- [#95](https://github.com/reportportal/agent-js-postman/issues/95) Issue with package installation.
+### Changed
+- `@reportportal/client-javascript` bumped to version `5.0.11`.
 
 ## [5.0.3] - 2023-05-30
 ### Fixed
