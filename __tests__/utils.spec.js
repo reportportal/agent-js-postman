@@ -246,25 +246,32 @@ describe('utils', () => {
     });
 
     describe('getClientInitObject', () => {
+        const baseOptions = {
+            endpoint: 'endpoint',
+            launch: 'launch',
+            project: 'project',
+            rerun: true,
+            rerunOf: 'rerunOf',
+            description: 'description',
+            attributes: 'attributes',
+            debug: true
+        };
         test('should return client init object', () => {
             const options = {
-                token: 'token',
-                endpoint: 'endpoint',
-                launch: 'launch',
-                project: 'project',
-                rerun: true,
-                rerunOf: 'rerunOf',
-                description: 'description',
-                attributes: 'attributes',
-                debug: true
+                ...baseOptions,
+                token: 'token'
+            };
+            const expectedOptions = {
+                ...baseOptions,
+                apiKey: 'token'
             };
 
             const clientInitObject = utils.getClientInitObject(options);
 
-            expect(clientInitObject).toEqual(options);
+            expect(clientInitObject).toEqual(expectedOptions);
         });
 
-        test('should return client with CLI options', () => {
+        test('should return client init object with CLI options', () => {
             const options = {
                 reportportalAgentJsPostmanToken: 'token',
                 reportportalAgentJsPostmanEndpoint: 'endpoint',
@@ -280,40 +287,47 @@ describe('utils', () => {
             const clientInitObject = utils.getClientInitObject(options);
 
             expect(clientInitObject).toEqual({
-                token: 'token',
-                endpoint: 'endpoint',
-                launch: 'launch',
-                project: 'project',
-                rerun: true,
-                rerunOf: 'rerunOf',
-                description: 'description',
+                ...baseOptions,
                 attributes: [{ key: null, value: 'attribute' }],
-                debug: true
+                apiKey: 'token'
             });
         });
 
-        test('should return client init object with default launch name', () => {
+        test('should return client init object and prefer "apiKey" over "token"', () => {
             const options = {
+                ...baseOptions,
                 token: 'token',
-                endpoint: 'endpoint',
-                project: 'project',
-                rerun: true,
-                rerunOf: 'rerunOf',
-                description: 'description',
-                attributes: 'attributes',
-                debug: true
+                apiKey: 'token2'
+            };
+            const expectedOptions = {
+                ...baseOptions,
+                apiKey: 'token2'
             };
 
             const clientInitObject = utils.getClientInitObject(options);
 
-            expect(clientInitObject).toEqual(Object.assign(options, { launch: 'Newman launch' }));
+            expect(clientInitObject).toEqual(expectedOptions);
+        });
+
+        test('should print warning to the console if deprecated "token" option used', () => {
+            const spyConsoleWarn = jest.spyOn(console, 'warn');
+
+            const options = {
+                ...baseOptions,
+                token: 'token'
+            };
+
+            utils.getClientInitObject(options);
+
+            expect(spyConsoleWarn).toHaveBeenCalledTimes(1);
+            expect(spyConsoleWarn).toHaveBeenCalledWith('ReportPortal warning. Option "token"' +
+                ' is deprecated. Use "apiKey" instead.');
         });
     });
 
     describe('getStartLaunchObj', () => {
         test('should return start launch object', () => {
             const options = {
-                launch: 'launch',
                 description: 'description',
                 attributes: [
                     {
@@ -346,7 +360,6 @@ describe('utils', () => {
 
         test('should return start launch object with CLI options', () => {
             const options = {
-                reportportalAgentJsPostmanLaunch: 'launch name',
                 reportportalAgentJsPostmanDescription: 'description',
                 reportportalAgentJsPostmanRerun: true,
                 reportportalAgentJsPostmanRerunOf: 'rerunOf'
@@ -355,7 +368,6 @@ describe('utils', () => {
             const startLaunchObject = utils.getStartLaunchObj(options);
 
             expect(startLaunchObject).toEqual({
-                launch: 'launch name',
                 description: 'description',
                 attributes: [{
                     key: 'agent',
@@ -366,35 +378,6 @@ describe('utils', () => {
                 rerunOf: 'rerunOf',
                 mode: undefined
             });
-        });
-
-        test('should return start launch object with default launch name', () => {
-            const options = {
-                description: 'description',
-                attributes: [
-                    {
-                        key: 'YourKey',
-                        value: 'YourValue'
-                    }
-                ],
-                rerun: true,
-                rerunOf: 'rerunOf'
-            };
-
-            const startLaunchObject = utils.getStartLaunchObj(options);
-
-            expect(startLaunchObject).toEqual(Object.assign(options,
-                { launch: 'Newman launch' },
-                { attributes: [
-                    {
-                        key: 'YourKey',
-                        value: 'YourValue'
-                    }, {
-                        key: 'agent',
-                        value: `${pjson.name}|${pjson.version}`,
-                        system: true
-                    }
-                ] }));
         });
     });
 
