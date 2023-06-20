@@ -24,8 +24,8 @@ To enable this reporter you have to specify `agent-js-postman` in Newman's `-r` 
 $ newman run https://postman-echo.com/status/200 \
     -r @reportportal/agent-js-postman \
     --reporter-@reportportal/agent-js-postman-debug=true \
-    --reporter-@reportportal/agent-js-postman-endpoint=http://your-instance.com:8080/api/v1 \
-    --reporter-@reportportal/agent-js-postman-token=00000000-0000-0000-0000-000000000000 \
+    --reporter-@reportportal/agent-js-postman-endpoint=https://your-instance.com:8080/api/v1 \
+    --reporter-@reportportal/agent-js-postman-api-key=reportportalApiKey \
     --reporter-@reportportal/agent-js-postman-launch=LAUNCH_NAME \
     --reporter-@reportportal/agent-js-postman-project=PROJECT_NAME \
     --reporter-@reportportal/agent-js-postman-description=LAUNCH_DESCRIPTION \
@@ -46,8 +46,8 @@ newman.run(
         reporters: "@reportportal/agent-js-postman",
         reporter: {
             "@reportportal/agent-js-postman": {
-                endpoint: "http://your-instance.com:8080/api/v1",
-                token: "00000000-0000-0000-0000-000000000000",
+                apiKey: "reportportalApiKey",
+                endpoint: "https://your-instance.com:8080/api/v1",
                 launch: "LAUNCH_NAME",
                 project: "PROJECT_NAME",
                 description: "LAUNCH_DESCRIPTION",
@@ -61,7 +61,7 @@ newman.run(
                     },
                 ],
                 mode: 'DEFAULT',
-                debug: true
+                debug: false
             }
         }
     },
@@ -87,37 +87,41 @@ fs.readdir('./collections_folder_path', (err, files) => {
 
 #### Options
 
-Both CLI and programmatic runs support following options:
+The full list of available options presented below.
 
-| Parameter | Description                                                                                                       |
-| --------- | ----------------------------------------------------------------------------------------------------------------- |
-| token     | User's Report Portal token from which you want to send requests. It can be found on the profile page of this user. |
-| endpoint  | URL of your server. For example 'https://server:8080/api/v1'.                                                     |
-| launch    | Name of launch at creation.                                                                                       |
-| project   | The name of the project in which the launches will be created.                                                      |
-| description   | Text description of launch.                                                                                     |
-| attributes   | Attributes of launch.<br/> Programmatically - [{ "key": "YourKey", "value": "YourValue" }] <br/> with CLI - "YourKey:YourValue;YourValueTwo"                                                                                  |
-| rerun     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                  |
-| rerunOf   | UUID of launch you want to rerun. If not specified, report portal will update the latest launch with the same name.                                                                                     |
-| debug     | Determines whether newman's run should be logged in details.                                                      |
-| mode     | Launch mode. Allowable values *DEFAULT* (by default) or *DEBUG*.
-| restClientConfig | The object with `agent` property for configure [http(s)](https://nodejs.org/api/https.html#https_https_request_url_options_callback) client, may contain other client options eg. `timeout`. |
-skippedIssue | *Default: true.* ReportPortal provides feature to mark skipped tests as not 'To Investigate' items on WS side.<br> Parameter could be equal boolean values:<br> *TRUE* - skipped tests considered as issues and will be marked as 'To Investigate' on Report Portal.<br> *FALSE* - skipped tests will not be marked as 'To Investigate' on application.
+| Option           | Necessity  | Default   | Description                                                                                                                                                                                                                                                                                                                                                                            |
+|------------------|------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| apiKey           | Required   |           | User's reportportal token from which you want to send requests. It can be found on the profile page of this user.                                                                                                                                                                                                                                                                      |
+| endpoint         | Required   |           | URL of your server. For example 'https://server:8080/api/v1'.                                                                                                                                                                                                                                                                                                                          |
+| launch           | Required   |           | Name of launch at creation.                                                                                                                                                                                                                                                                                                                                                            |
+| project          | Required   |           | The name of the project in which the launches will be created.                                                                                                                                                                                                                                                                                                                         |
+| attributes       | Optional   | []        | Launch attributes. Programmatically - [{ "key": "YourKey", "value": "YourValue" }] <br/> with CLI - "YourKey:YourValue;YourValueTwo"                                                                                                                                                                                                                                                                                                                                                                    |
+| description      | Optional   | ''        | Launch description.                                                                                                                                                                                                                                                                                                                                                                    |
+| rerun            | Optional   | false     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                                                                                                                                                                                                                                                |
+| rerunOf          | Optional   | Not set   | UUID of launch you want to rerun. If not specified, reportportal will update the latest launch with the same name                                                                                                                                                                                                                                                                      |
+| mode             | Optional   | 'DEFAULT' | Results will be submitted to Launches page <br/> *'DEBUG'* - Results will be submitted to Debug page.                                                                                                                                                                                                                                                                                   |
+| skippedIssue     | Optional   | true      | reportportal provides feature to mark skipped tests as not 'To Investigate'. <br/> Option could be equal boolean values: <br/> *true* - skipped tests considered as issues and will be marked as 'To Investigate' on reportportal. <br/> *false* - skipped tests will not be marked as 'To Investigate' on application.                                                                |
+| debug            | Optional   | false     | This flag allows seeing the logs of the client-javascript. Useful for debugging.                                                                                                                                                                                                                                                                                                       |
+| launchId         | Optional   | Not set   | The _ID_ of an already existing launch. The launch must be in 'IN_PROGRESS' status while the tests are running. Please note that if this _ID_ is provided, the launch will not be finished at the end of the run and must be finished separately.                                                                                                                                       |
+| logLaunchLink    | Optional   | false     | This flag allows print the URL of the Launch of the tests in console.                                                                                                                                                                                                                                                                                                                  |
+| restClientConfig | Optional   | Not set   | The object with `agent` property for configure [http(s)](https://nodejs.org/api/https.html#https_https_request_url_options_callback) client, may contain other client options eg. [`timeout`](https://github.com/reportportal/client-javascript#timeout-30000ms-on-axios-requests). <br/> Visit [client-javascript](https://github.com/reportportal/client-javascript) for more details. |
+| token            | Deprecated | Not set   | Use `apiKey` instead.                                                                                                                                                                                                                                                                                                                                                                  |
+
 ### Report static attributes
 * To report attributes for suite you should use collection variables.
 
-VARIABLE | INITIAL VALUE | CURRENT VALUE
---------- | ----------- | -----------
-rp.attributes | keySuiteOne:valueSuiteOne | keySuiteOne:valueSuiteOne
+| VARIABLE      | INITIAL VALUE             | CURRENT VALUE             |
+|---------------|---------------------------|---------------------------|
+| rp.attributes | keySuiteOne:valueSuiteOne | keySuiteOne:valueSuiteOne |
 
 * To report attributes for tests inside of Pre-request Script you should use the next method
 
 **pm.environment.set**
 
-Parameter | Required | Description | Examples
---------- | ----------- | ----------- | -----------
-namespace | true | "string" - namespace, must be equal to the *rp.attributes* | "rp.attributes"
-attributes | true | "string" - contains set of pairs *key:value* | "keyOne:valueOne;valueTwo;keyThree:valueThree"
+| Parameter  | Required | Description                                                | Examples                                       |
+|------------|----------|------------------------------------------------------------|------------------------------------------------|
+| namespace  | true     | "string" - namespace, must be equal to the *rp.attributes* | "rp.attributes"                                |
+| attributes | true     | "string" - contains set of pairs *key:value*               | "keyOne:valueOne;valueTwo;keyThree:valueThree" |
 
 ```javascript
 pm.environment.set("rp.attributes", "keyOne:valueOne;valueTwo;keyThree:valueThree");
@@ -135,9 +139,9 @@ Both suites and tests support description. For reporting with description you sh
 
 * To finish launch/suite with status you should use collection variables
 
-VARIABLE | INITIAL VALUE | CURRENT VALUE
---------- | ----------- | -----------
-rp.launchStatus (for launch)<br/>rp.status (for suite) | your status | your status
+| VARIABLE                                               | INITIAL VALUE | CURRENT VALUE |
+|--------------------------------------------------------|---------------|---------------|
+| rp.launchStatus (for launch)<br/>rp.status (for suite) | your status   | your status   |
 
 * To finish tests you should use environment variables inside of Pre-request Script
 ```javascript
@@ -151,10 +155,10 @@ pm.variables.set("rp.status", "status");
 
 For both tests or steps, this is true
 
-Parameter | Required | Description | Examples
---------- | ----------- | ----------- | -----------
-namespace | true | "string" - namespace, must be equal to the *rp.status* | "rp.status"
-status | true | "string" - status | "passed"
+| Parameter | Required | Description                                            | Examples    |
+|-----------|----------|--------------------------------------------------------|-------------|
+| namespace | true     | "string" - namespace, must be equal to the *rp.status* | "rp.status" |
+| status    | true     | "string" - status                                      | "passed"    |
 
 ### Logging
 You can use the following methods to report logs with different log levels:
@@ -165,19 +169,19 @@ You can use the following methods to report logs with different log levels:
 * console.warn("launch/suite/test", "message");
 * console.info("launch/suite/test", "message");
 
-Parameter | Required | Description | Examples
---------- | ----------- | ----------- | -----------
-namespace | true | "string" - namespace, must be equal to the *launch, suite or test* depends on where you want to report | "test"
-message | true | "string" - message | "your message"
+| Parameter | Required | Description                                                                                            | Examples       |
+|-----------|----------|--------------------------------------------------------------------------------------------------------|----------------|
+| namespace | true     | "string" - namespace, must be equal to the *launch, suite or test* depends on where you want to report | "test"         |
+| message   | true     | "string" - message                                                                                     | "your message" |
 
 * Step doesn't support logs reporting
 
 ### Report test case id
 * To report suite with test case id you should use collection variables
 
-VARIABLE | INITIAL VALUE | CURRENT VALUE
---------- | ----------- | -----------
-rp.testCaseId | yourSuiteTestCaseId | yourSuiteTestCaseId
+| VARIABLE      | INITIAL VALUE       | CURRENT VALUE       |
+|---------------|---------------------|---------------------|
+| rp.testCaseId | yourSuiteTestCaseId | yourSuiteTestCaseId |
 
 * To report tests with test case id you should use environment variables inside of Pre-request Script
 ```javascript
@@ -191,10 +195,10 @@ pm.variables.set("rp.testCaseId", "stepTestCaseId");
 
 For both tests or steps, this is true
 
-Parameter | Required | Description | Examples
---------- | ----------- | ----------- | -----------
-namespace | true | "string" - namespace, must be equal to the *rp.testCaseId* | "rp.testCaseId"
-testCaseId | true | "string" - test case id value | "yourTestCaseId"
+| Parameter  | Required | Description                                                | Examples         |
+|------------|----------|------------------------------------------------------------|------------------|
+| namespace  | true     | "string" - namespace, must be equal to the *rp.testCaseId* | "rp.testCaseId"  |
+| testCaseId | true     | "string" - test case id value                              | "yourTestCaseId" |
 
 # Copyright Notice
 Licensed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
