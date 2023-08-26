@@ -15,509 +15,543 @@
  */
 
 const path = require('path');
-const utils = require('./../lib/utils');
-const { testPatterns, pmVariablesTestCaseIdPatterns } = require('./../lib/constants/patterns');
-const pjson = require('./../package.json');
+const utils = require('../lib/utils');
+const { testPatterns, pmVariablesTestCaseIdPatterns } = require('../lib/constants/patterns');
+const pjson = require('../package.json');
 
 describe('utils', () => {
-    describe('matchPattern', () => {
-        test('should return null if the string is undefined', () => {
-            const matchPattern = utils.matchPattern();
+  describe('matchPattern', () => {
+    test('should return null if the string is undefined', () => {
+      const matchPattern = utils.matchPattern();
 
-            expect(matchPattern).toEqual(null);
-        });
-
-        test('should throw Error if patterns array doesn\'t contain regex patterns', () => {
-            const errorMessage = 'Patterns array must contain only RegExp patterns';
-
-            expect(() => utils.matchPattern('str', 'patterns')).toThrowError(errorMessage);
-        });
-
-        test('should return correct match pattern if there is a match when matching the string with the regex', () => {
-            const patterns = [/[\s]*pm.test\("(.*?)",/];
-            const string = 'pm.test("Test, status code is 200", function () {});';
-
-            const matchPattern = utils.matchPattern(string, patterns);
-
-            expect(matchPattern).toEqual('pm.test("Test, status code is 200",');
-        });
-
-        test('should return null match pattern if there is no a match when matching the string with the regex', () => {
-            const patterns = [/[\s]*pm.random\("(.*?)",/];
-            const string = 'pm.test("Test, status code is 200", function () {});';
-
-            const matchPattern = utils.matchPattern(string, patterns);
-
-            expect(matchPattern).toEqual(null);
-        });
+      expect(matchPattern).toEqual(null);
     });
 
-    describe('isArrayOfType', () => {
-        test('should return true if an array consists of elements of specific type', () => {
-            const isArrayOfType = utils.isArrayOfType([/[\s]*pm.random\("(.*?)",/], RegExp);
+    test("should throw Error if patterns array doesn't contain regex patterns", () => {
+      const errorMessage = 'Patterns array must contain only RegExp patterns';
 
-            expect(isArrayOfType).toEqual(true);
-        });
-
-        test('should return false if an array doesn\'t consist of elements of specific type', () => {
-            const isArrayOfType = utils.isArrayOfType(['string'], RegExp);
-
-            expect(isArrayOfType).toEqual(false);
-        });
+      expect(() => utils.matchPattern('str', 'patterns')).toThrowError(errorMessage);
     });
 
-    describe('getStepParameterByPatterns', () => {
-        test('should return correct array of parameter with specific pattern testPatterns', () => {
-            const stepNames = utils.getStepParameterByPatterns('pm.test("Test, status code is 400", function () {',
-                testPatterns);
+    test('should return correct match pattern if there is a match when matching the string with the regex', () => {
+      const patterns = [/[\s]*pm.test\("(.*?)",/];
+      const string = 'pm.test("Test, status code is 200", function () {});';
 
-            expect(stepNames).toEqual(['Test, status code is 400']);
-        });
+      const matchPattern = utils.matchPattern(string, patterns);
 
-        test('should return correct array of parameter with specific pattern pmVariablesTestCaseIdPatterns', () => {
-            const testCaseId = utils.getStepParameterByPatterns('pm.variables.set("rp.testCaseId", "testCaseId");',
-                pmVariablesTestCaseIdPatterns);
-
-            expect(testCaseId).toEqual(['testCaseId']);
-        });
+      expect(matchPattern).toEqual('pm.test("Test, status code is 200",');
     });
 
-    describe('getArrAttributesFromString', () => {
-        test('should return correct array of attributes', () => {
-            const parameter = 'keyOne:valueOne';
-            const expectedAttributes = [
-                {
-                    key: 'keyOne',
-                    value: 'valueOne'
-                }
-            ];
+    test('should return null match pattern if there is no a match when matching the string with the regex', () => {
+      const patterns = [/[\s]*pm.random\("(.*?)",/];
+      const string = 'pm.test("Test, status code is 200", function () {});';
 
-            const attributes = utils.getArrAttributesFromString(parameter);
+      const matchPattern = utils.matchPattern(string, patterns);
 
-            expect(attributes).toEqual(expectedAttributes);
-        });
+      expect(matchPattern).toEqual(null);
+    });
+  });
 
-        test('should return correct array of attributes, key should be null', () => {
-            const parameter = 'keyOne:valueOne;valueTwo';
-            const expectedAttributes = [
-                {
-                    key: 'keyOne',
-                    value: 'valueOne'
-                }, {
-                    key: null,
-                    value: 'valueTwo'
-                }
-            ];
+  describe('isArrayOfType', () => {
+    test('should return true if an array consists of elements of specific type', () => {
+      const isArrayOfType = utils.isArrayOfType([/[\s]*pm.random\("(.*?)",/], RegExp);
 
-            const attributes = utils.getArrAttributesFromString(parameter);
-
-            expect(attributes).toEqual(expectedAttributes);
-        });
-
-        test('should return empty array of attributes, if there is no parameter', () => {
-            const attributes = utils.getArrAttributesFromString();
-
-            expect(attributes).toEqual([]);
-        });
+      expect(isArrayOfType).toEqual(true);
     });
 
-    describe('getAttributes', () => {
-        test('should return correct array of attributes', () => {
-            const variables = {
-                members: [
-                    {
-                        id: 'id',
-                        key: 'rp.attributes',
-                        value: 'keyOne:valueOne',
-                        type: 'string'
-                    },
-                    {
-                        id: 'idTwo',
-                        key: 'keyTwo',
-                        value: 'valueTwo',
-                        type: 'string'
-                    }
-                ]
-            };
-            const expectedAttributes = [
-                {
-                    key: 'keyOne',
-                    value: 'valueOne'
-                }
-            ];
+    test("should return false if an array doesn't consist of elements of specific type", () => {
+      const isArrayOfType = utils.isArrayOfType(['string'], RegExp);
 
-            const attributes = utils.getAttributes(variables);
+      expect(isArrayOfType).toEqual(false);
+    });
+  });
 
-            expect(attributes).toEqual(expectedAttributes);
-        });
+  describe('getStepParameterByPatterns', () => {
+    test('should return correct array of parameter with specific pattern testPatterns', () => {
+      const stepNames = utils.getStepParameterByPatterns(
+        'pm.test("Test, status code is 400", function () {',
+        testPatterns,
+      );
 
-        test('should return correct array of attributes, key should be null', () => {
-            const variables = {
-                members: [
-                    {
-                        id: 'id',
-                        key: 'rp.attributes',
-                        value: 'valueOne',
-                        type: 'string'
-                    }
-                ]
-            };
-            const expectedAttributes = [
-                {
-                    key: null,
-                    value: 'valueOne'
-                }
-            ];
-
-            const attributes = utils.getAttributes(variables);
-
-            expect(attributes).toEqual(expectedAttributes);
-        });
-
-        test('should return empty array of attributes, if there is no match with rp.attributes namespace', () => {
-            const variables = {
-                members: [
-                    {
-                        id: 'id',
-                        key: 'KeyOne',
-                        value: 'valueOne',
-                        type: 'string'
-                    }
-                ]
-            };
-
-            const attributes = utils.getAttributes(variables);
-
-            expect(attributes).toEqual([]);
-        });
+      expect(stepNames).toEqual(['Test, status code is 400']);
     });
 
-    describe('getCollectionVariablesByKey', () => {
-        test('should return correct testCaseId if key is equals to "testCaseId"', () => {
-            const variables = {
-                members: [
-                    {
-                        id: 'id',
-                        key: 'rp.testCaseId',
-                        value: 'testCaseId',
-                        type: 'string'
-                    }
-                ]
-            };
+    test('should return correct array of parameter with specific pattern pmVariablesTestCaseIdPatterns', () => {
+      const testCaseId = utils.getStepParameterByPatterns(
+        'pm.variables.set("rp.testCaseId", "testCaseId");',
+        pmVariablesTestCaseIdPatterns,
+      );
 
-            const testCaseId = utils.getCollectionVariablesByKey('testCaseId', variables);
+      expect(testCaseId).toEqual(['testCaseId']);
+    });
+  });
 
-            expect(testCaseId).toEqual('testCaseId');
-        });
+  describe('getArrAttributesFromString', () => {
+    test('should return correct array of attributes', () => {
+      const parameter = 'keyOne:valueOne';
+      const expectedAttributes = [
+        {
+          key: 'keyOne',
+          value: 'valueOne',
+        },
+      ];
 
-        test('should return correct status if key is equals to "status"', () => {
-            const variables = {
-                members: [
-                    {
-                        id: 'id',
-                        key: 'rp.status',
-                        value: 'passed',
-                        type: 'string'
-                    }
-                ]
-            };
+      const attributes = utils.getArrAttributesFromString(parameter);
 
-            const status = utils.getCollectionVariablesByKey('status', variables);
-
-            expect(status).toEqual('passed');
-        });
-
-        test('should return undefined, if there is no match with key namespace', () => {
-            const variables = {
-                members: [
-                    {
-                        id: 'id',
-                        key: 'KeyOne',
-                        value: 'valueOne',
-                        type: 'string'
-                    }
-                ]
-            };
-
-            const testCaseId = utils.getCollectionVariablesByKey('testCaseId', variables);
-
-            expect(testCaseId).toEqual(undefined);
-        });
+      expect(attributes).toEqual(expectedAttributes);
     });
 
-    describe('getClientInitObject', () => {
-        const baseOptions = {
-            endpoint: 'endpoint',
-            launch: 'launch',
-            project: 'project',
-            rerun: true,
-            rerunOf: 'rerunOf',
-            description: 'description',
-            attributes: 'attributes',
-            debug: true
-        };
-        test('should return client init object', () => {
-            const options = {
-                ...baseOptions,
-                token: 'token'
-            };
-            const expectedOptions = {
-                ...baseOptions,
-                apiKey: 'token'
-            };
+    test('should return correct array of attributes, key should be null', () => {
+      const parameter = 'keyOne:valueOne;valueTwo';
+      const expectedAttributes = [
+        {
+          key: 'keyOne',
+          value: 'valueOne',
+        },
+        {
+          key: null,
+          value: 'valueTwo',
+        },
+      ];
 
-            const clientInitObject = utils.getClientInitObject(options);
+      const attributes = utils.getArrAttributesFromString(parameter);
 
-            expect(clientInitObject).toEqual(expectedOptions);
-        });
-
-        test('should return client init object with CLI options', () => {
-            const options = {
-                reportportalAgentJsPostmanToken: 'token',
-                reportportalAgentJsPostmanEndpoint: 'endpoint',
-                reportportalAgentJsPostmanLaunch: 'launch',
-                reportportalAgentJsPostmanProject: 'project',
-                reportportalAgentJsPostmanRerun: true,
-                reportportalAgentJsPostmanRerunOf: 'rerunOf',
-                reportportalAgentJsPostmanDescription: 'description',
-                reportportalAgentJsPostmanAttributes: 'attribute',
-                reportportalAgentJsPostmanDebug: true
-            };
-
-            const clientInitObject = utils.getClientInitObject(options);
-
-            expect(clientInitObject).toEqual({
-                ...baseOptions,
-                attributes: [{ key: null, value: 'attribute' }],
-                apiKey: 'token'
-            });
-        });
-
-        test('should return client init object and prefer "apiKey" over "token"', () => {
-            const options = {
-                ...baseOptions,
-                token: 'token',
-                apiKey: 'token2'
-            };
-            const expectedOptions = {
-                ...baseOptions,
-                apiKey: 'token2'
-            };
-
-            const clientInitObject = utils.getClientInitObject(options);
-
-            expect(clientInitObject).toEqual(expectedOptions);
-        });
-
-        test('should print warning to the console if deprecated "token" option used', () => {
-            const spyConsoleWarn = jest.spyOn(console, 'warn');
-
-            const options = {
-                ...baseOptions,
-                token: 'token'
-            };
-
-            utils.getClientInitObject(options);
-
-            expect(spyConsoleWarn).toHaveBeenCalledTimes(1);
-            expect(spyConsoleWarn).toHaveBeenCalledWith('ReportPortal warning. Option "token"' +
-                ' is deprecated. Use "apiKey" instead.');
-        });
+      expect(attributes).toEqual(expectedAttributes);
     });
 
-    describe('getStartLaunchObj', () => {
-        test('should return start launch object', () => {
-            const options = {
-                description: 'description',
-                attributes: [
-                    {
-                        key: 'YourKey',
-                        value: 'YourValue'
-                    }, {
-                        value: 'YourValue'
-                    }
-                ],
-                rerun: true,
-                rerunOf: 'rerunOf',
-                mode: 'DEBUG'
-            };
+    test('should return empty array of attributes, if there is no parameter', () => {
+      const attributes = utils.getArrAttributesFromString();
 
-            const startLaunchObject = utils.getStartLaunchObj(options);
+      expect(attributes).toEqual([]);
+    });
+  });
 
-            expect(startLaunchObject).toEqual(Object.assign(options, {
-                attributes: [{
-                    key: 'YourKey',
-                    value: 'YourValue'
-                }, {
-                    value: 'YourValue'
-                }, {
-                    key: 'agent',
-                    value: `${pjson.name}|${pjson.version}`,
-                    system: true
-                }]
-            }));
-        });
+  describe('getAttributes', () => {
+    test('should return correct array of attributes', () => {
+      const variables = {
+        members: [
+          {
+            id: 'id',
+            key: 'rp.attributes',
+            value: 'keyOne:valueOne',
+            type: 'string',
+          },
+          {
+            id: 'idTwo',
+            key: 'keyTwo',
+            value: 'valueTwo',
+            type: 'string',
+          },
+        ],
+      };
+      const expectedAttributes = [
+        {
+          key: 'keyOne',
+          value: 'valueOne',
+        },
+      ];
 
-        test('should return start launch object with CLI options', () => {
-            const options = {
-                reportportalAgentJsPostmanDescription: 'description',
-                reportportalAgentJsPostmanRerun: true,
-                reportportalAgentJsPostmanRerunOf: 'rerunOf'
-            };
+      const attributes = utils.getAttributes(variables);
 
-            const startLaunchObject = utils.getStartLaunchObj(options);
-
-            expect(startLaunchObject).toEqual({
-                description: 'description',
-                attributes: [{
-                    key: 'agent',
-                    value: `${pjson.name}|${pjson.version}`,
-                    system: true
-                }],
-                rerun: true,
-                rerunOf: 'rerunOf',
-                mode: undefined
-            });
-        });
+      expect(attributes).toEqual(expectedAttributes);
     });
 
-    describe('getCollectionPath', function () {
-        test('should return correct collection path with separator', function () {
-            jest.spyOn(process, 'cwd').mockImplementation(() => `C:${path.sep}testProject`);
-            const mockedTest = {
-                filePath: `C:${path.sep}testProject${path.sep}test${path.sep}example.js`
-            };
-            const expectedCollectionPath = 'test/example.js';
+    test('should return correct array of attributes, key should be null', () => {
+      const variables = {
+        members: [
+          {
+            id: 'id',
+            key: 'rp.attributes',
+            value: 'valueOne',
+            type: 'string',
+          },
+        ],
+      };
+      const expectedAttributes = [
+        {
+          key: null,
+          value: 'valueOne',
+        },
+      ];
 
-            const codeRef = utils.getCollectionPath(mockedTest.filePath);
+      const attributes = utils.getAttributes(variables);
 
-            expect(codeRef).toEqual(expectedCollectionPath);
-        });
-
-        test('should return correct collection path without separator', function () {
-            jest.spyOn(process, 'cwd').mockImplementation(() => `C:${path.sep}testProject`);
-            const mockedTest = {
-                filePath: `C:${path.sep}testProject${path.sep}example.js`
-            };
-            const expectedCollectionPath = 'example.js';
-
-            const codeRef = utils.getCollectionPath(mockedTest.filePath);
-
-            expect(codeRef).toEqual(expectedCollectionPath);
-        });
+      expect(attributes).toEqual(expectedAttributes);
     });
 
-    describe('getCodeRef', function () {
-        test('should return code ref', function () {
-            const mockedTest = {
-                testPath: 'example/Test',
-                title: 'testTitle'
-            };
-            const expectedCodeRef = 'example/Test/testTitle';
+    test('should return empty array of attributes, if there is no match with rp.attributes namespace', () => {
+      const variables = {
+        members: [
+          {
+            id: 'id',
+            key: 'KeyOne',
+            value: 'valueOne',
+            type: 'string',
+          },
+        ],
+      };
 
-            const codeRef = utils.getCodeRef(mockedTest.testPath, mockedTest.title);
+      const attributes = utils.getAttributes(variables);
 
-            expect(codeRef).toEqual(expectedCodeRef);
-        });
+      expect(attributes).toEqual([]);
+    });
+  });
+
+  describe('getCollectionVariablesByKey', () => {
+    test('should return correct testCaseId if key is equals to "testCaseId"', () => {
+      const variables = {
+        members: [
+          {
+            id: 'id',
+            key: 'rp.testCaseId',
+            value: 'testCaseId',
+            type: 'string',
+          },
+        ],
+      };
+
+      const testCaseId = utils.getCollectionVariablesByKey('testCaseId', variables);
+
+      expect(testCaseId).toEqual('testCaseId');
     });
 
-    describe('getAgentInfo', () => {
-        test('should contain version and name properties', () => {
-            const agentParams = utils.getAgentInfo();
+    test('should return correct status if key is equals to "status"', () => {
+      const variables = {
+        members: [
+          {
+            id: 'id',
+            key: 'rp.status',
+            value: 'passed',
+            type: 'string',
+          },
+        ],
+      };
 
-            expect(Object.keys(agentParams)).toContain('version');
-            expect(Object.keys(agentParams)).toContain('name');
-        });
+      const status = utils.getCollectionVariablesByKey('status', variables);
+
+      expect(status).toEqual('passed');
     });
 
-    describe('getParameters', () => {
-        test('should return an array of objects with correct data', () => {
-            const data = [{ path: 'post', value: 5 }, { path: 'get', value: 3 }];
-            const expectedParameters = [{ key: 'path', value: 'post' }, { key: 'value', value: 5 }];
+    test('should return undefined, if there is no match with key namespace', () => {
+      const variables = {
+        members: [
+          {
+            id: 'id',
+            key: 'KeyOne',
+            value: 'valueOne',
+            type: 'string',
+          },
+        ],
+      };
 
-            const parameters = utils.getParameters(data, 0);
+      const testCaseId = utils.getCollectionVariablesByKey('testCaseId', variables);
 
-            expect(parameters).toEqual(expectedParameters);
-        });
+      expect(testCaseId).toEqual(undefined);
+    });
+  });
 
-        test('should return undefined in case if no data', () => {
-            const data = undefined;
+  describe('getClientInitObject', () => {
+    const baseOptions = {
+      endpoint: 'endpoint',
+      launch: 'launch',
+      project: 'project',
+      rerun: true,
+      rerunOf: 'rerunOf',
+      description: 'description',
+      attributes: 'attributes',
+      debug: true,
+    };
 
-            const parameters = utils.getParameters(data, 0);
+    test('should return client init object', () => {
+      const options = {
+        ...baseOptions,
+        token: 'token',
+      };
+      const expectedOptions = {
+        ...baseOptions,
+        apiKey: 'token',
+      };
 
-            expect(parameters).toEqual(undefined);
-        });
+      const clientInitObject = utils.getClientInitObject(options);
 
-        // eslint-disable-next-line max-len
-        test('should take the last element from a data array if the length of the array is less than an index and return an array of objects', () => {
-            const data = [{ path: 'post', value: 5 }, { path: 'get', value: 3 }];
-            const expectedParameters = [{ key: 'path', value: 'get' }, { key: 'value', value: 3 }];
-
-            const parameters = utils.getParameters(data, 3);
-
-            expect(parameters).toEqual(expectedParameters);
-        });
+      expect(clientInitObject).toEqual(expectedOptions);
     });
 
-    describe('Array.prototype.sliceOn', () => {
-        test('should return an array from 0 index to 2 index', () => {
-            const array = ['one', 'two', '//three'];
+    test('should return client init object with CLI options', () => {
+      const options = {
+        reportportalAgentJsPostmanToken: 'token',
+        reportportalAgentJsPostmanEndpoint: 'endpoint',
+        reportportalAgentJsPostmanLaunch: 'launch',
+        reportportalAgentJsPostmanProject: 'project',
+        reportportalAgentJsPostmanRerun: true,
+        reportportalAgentJsPostmanRerunOf: 'rerunOf',
+        reportportalAgentJsPostmanDescription: 'description',
+        reportportalAgentJsPostmanAttributes: 'attribute',
+        reportportalAgentJsPostmanDebug: true,
+      };
 
-            const result = array.sliceOn(0, x => x.includes('//'));
+      const clientInitObject = utils.getClientInitObject(options);
 
-            expect(result).toEqual(['one', 'two']);
-        });
-
-        test('should return an array from 0 index to 1 index', () => {
-            const array = ['one', '//two', 'three'];
-
-            const result = array.sliceOn(0, x => x.includes('//'));
-
-            expect(result).toEqual(['one']);
-        });
-
-        test('should return an empty array if the condition doesn\'t set', () => {
-            const array = ['one', '//two', 'three'];
-
-            const result = array.sliceOn(0);
-
-            expect(result).toEqual([]);
-        });
+      expect(clientInitObject).toEqual({
+        ...baseOptions,
+        attributes: [{ key: null, value: 'attribute' }],
+        apiKey: 'token',
+      });
     });
 
-    describe('Array.prototype.flatMap', () => {
-        test('should return the flattened array', () => {
-            const array = ['one', 'two', 'three'];
+    test('should return client init object and prefer "apiKey" over "token"', () => {
+      const options = {
+        ...baseOptions,
+        token: 'token',
+        apiKey: 'token2',
+      };
+      const expectedOptions = {
+        ...baseOptions,
+        apiKey: 'token2',
+      };
 
-            const result = array.flatMap(() => array);
+      const clientInitObject = utils.getClientInitObject(options);
 
-            expect(result).toEqual(['one', 'two', 'three', 'one', 'two', 'three', 'one', 'two', 'three']);
-        });
-
-        test('should return the same array if the callback doesn\'t set', () => {
-            const array = ['one', 'two', 'three'];
-
-            const result = array.flatMap();
-
-            expect(result).toEqual(array);
-        });
+      expect(clientInitObject).toEqual(expectedOptions);
     });
 
-    describe('Array.prototype.groupBySpecificField', () => {
-        test('should return array that is grouped by specific field', () => {
-            const array = [{ name: 'name' }, null, null, { additional: 'additional' }, { name: 'nameTwo' }];
+    test('should print warning to the console if deprecated "token" option used', () => {
+      const spyConsoleWarn = jest.spyOn(console, 'warn');
 
-            const result = array.groupBySpecificField('name', ['additional']);
+      const options = {
+        ...baseOptions,
+        token: 'token',
+      };
 
-            expect(result).toEqual([{ name: 'name', additional: 'additional' }, { name: 'nameTwo' }]);
-        });
+      utils.getClientInitObject(options);
 
-        test('should return an empty array if the parameter doesn\'t set', () => {
-            const array = ['one', 'two', 'three'];
-
-            const result = array.groupBySpecificField();
-
-            expect(result).toEqual([]);
-        });
+      expect(spyConsoleWarn).toHaveBeenCalledTimes(1);
+      expect(spyConsoleWarn).toHaveBeenCalledWith(
+        'ReportPortal warning. Option "token" is deprecated. Use "apiKey" instead.',
+      );
     });
+  });
+
+  describe('getStartLaunchObj', () => {
+    test('should return start launch object', () => {
+      const options = {
+        description: 'description',
+        attributes: [
+          {
+            key: 'YourKey',
+            value: 'YourValue',
+          },
+          {
+            value: 'YourValue',
+          },
+        ],
+        rerun: true,
+        rerunOf: 'rerunOf',
+        mode: 'DEBUG',
+      };
+
+      const startLaunchObject = utils.getStartLaunchObj(options);
+
+      expect(startLaunchObject).toEqual(
+        Object.assign(options, {
+          attributes: [
+            {
+              key: 'YourKey',
+              value: 'YourValue',
+            },
+            {
+              value: 'YourValue',
+            },
+            {
+              key: 'agent',
+              value: `${pjson.name}|${pjson.version}`,
+              system: true,
+            },
+          ],
+        }),
+      );
+    });
+
+    test('should return start launch object with CLI options', () => {
+      const options = {
+        reportportalAgentJsPostmanDescription: 'description',
+        reportportalAgentJsPostmanRerun: true,
+        reportportalAgentJsPostmanRerunOf: 'rerunOf',
+      };
+
+      const startLaunchObject = utils.getStartLaunchObj(options);
+
+      expect(startLaunchObject).toEqual({
+        description: 'description',
+        attributes: [
+          {
+            key: 'agent',
+            value: `${pjson.name}|${pjson.version}`,
+            system: true,
+          },
+        ],
+        rerun: true,
+        rerunOf: 'rerunOf',
+        mode: undefined,
+      });
+    });
+  });
+
+  describe('getCollectionPath', function () {
+    test('should return correct collection path with separator', function () {
+      jest.spyOn(process, 'cwd').mockImplementation(() => `C:${path.sep}testProject`);
+      const mockedTest = {
+        filePath: `C:${path.sep}testProject${path.sep}test${path.sep}example.js`,
+      };
+      const expectedCollectionPath = 'test/example.js';
+
+      const codeRef = utils.getCollectionPath(mockedTest.filePath);
+
+      expect(codeRef).toEqual(expectedCollectionPath);
+    });
+
+    test('should return correct collection path without separator', function () {
+      jest.spyOn(process, 'cwd').mockImplementation(() => `C:${path.sep}testProject`);
+      const mockedTest = {
+        filePath: `C:${path.sep}testProject${path.sep}example.js`,
+      };
+      const expectedCollectionPath = 'example.js';
+
+      const codeRef = utils.getCollectionPath(mockedTest.filePath);
+
+      expect(codeRef).toEqual(expectedCollectionPath);
+    });
+  });
+
+  describe('getCodeRef', function () {
+    test('should return code ref', function () {
+      const mockedTest = {
+        testPath: 'example/Test',
+        title: 'testTitle',
+      };
+      const expectedCodeRef = 'example/Test/testTitle';
+
+      const codeRef = utils.getCodeRef(mockedTest.testPath, mockedTest.title);
+
+      expect(codeRef).toEqual(expectedCodeRef);
+    });
+  });
+
+  describe('getAgentInfo', () => {
+    test('should contain version and name properties', () => {
+      const agentParams = utils.getAgentInfo();
+
+      expect(Object.keys(agentParams)).toContain('version');
+      expect(Object.keys(agentParams)).toContain('name');
+    });
+  });
+
+  describe('getParameters', () => {
+    test('should return an array of objects with correct data', () => {
+      const data = [
+        { path: 'post', value: 5 },
+        { path: 'get', value: 3 },
+      ];
+      const expectedParameters = [
+        { key: 'path', value: 'post' },
+        { key: 'value', value: 5 },
+      ];
+
+      const parameters = utils.getParameters(data, 0);
+
+      expect(parameters).toEqual(expectedParameters);
+    });
+
+    test('should return undefined in case if no data', () => {
+      const data = undefined;
+
+      const parameters = utils.getParameters(data, 0);
+
+      expect(parameters).toEqual(undefined);
+    });
+
+    // eslint-disable-next-line max-len
+    test('should take the last element from a data array if the length of the array is less than an index and return an array of objects', () => {
+      const data = [
+        { path: 'post', value: 5 },
+        { path: 'get', value: 3 },
+      ];
+      const expectedParameters = [
+        { key: 'path', value: 'get' },
+        { key: 'value', value: 3 },
+      ];
+
+      const parameters = utils.getParameters(data, 3);
+
+      expect(parameters).toEqual(expectedParameters);
+    });
+  });
+
+  describe('Array.prototype.sliceOn', () => {
+    test('should return an array from 0 index to 2 index', () => {
+      const array = ['one', 'two', '//three'];
+
+      const result = array.sliceOn(0, (x) => x.includes('//'));
+
+      expect(result).toEqual(['one', 'two']);
+    });
+
+    test('should return an array from 0 index to 1 index', () => {
+      const array = ['one', '//two', 'three'];
+
+      const result = array.sliceOn(0, (x) => x.includes('//'));
+
+      expect(result).toEqual(['one']);
+    });
+
+    test("should return an empty array if the condition doesn't set", () => {
+      const array = ['one', '//two', 'three'];
+
+      const result = array.sliceOn(0);
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('Array.prototype.flatMap', () => {
+    test('should return the flattened array', () => {
+      const array = ['one', 'two', 'three'];
+
+      const result = array.flatMap(() => array);
+
+      expect(result).toEqual(['one', 'two', 'three', 'one', 'two', 'three', 'one', 'two', 'three']);
+    });
+
+    test("should return the same array if the callback doesn't set", () => {
+      const array = ['one', 'two', 'three'];
+
+      const result = array.flatMap();
+
+      expect(result).toEqual(array);
+    });
+  });
+
+  describe('Array.prototype.groupBySpecificField', () => {
+    test('should return array that is grouped by specific field', () => {
+      const array = [
+        { name: 'name' },
+        null,
+        null,
+        { additional: 'additional' },
+        { name: 'nameTwo' },
+      ];
+
+      const result = array.groupBySpecificField('name', ['additional']);
+
+      expect(result).toEqual([{ name: 'name', additional: 'additional' }, { name: 'nameTwo' }]);
+    });
+
+    test("should return an empty array if the parameter doesn't set", () => {
+      const array = ['one', 'two', 'three'];
+
+      const result = array.groupBySpecificField();
+
+      expect(result).toEqual([]);
+    });
+  });
 });

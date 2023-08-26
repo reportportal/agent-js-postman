@@ -6,6 +6,7 @@
   },
   "env": {
     "node": true,
+    "jest": true,
     "es6": true
   },
   "parserOptions": {
@@ -27,6 +28,8 @@
     "prefer-destructuring": "warn",
     "arrow-parens": "error",
     "default-param-last": "warn",
+    "prefer-spread": "warn",
+    "prefer-object-spread": "warn",
     "padding-line-between-statements": [
       "error",
       { "blankLine": "always", "prev": "*", "next": "return" },
