@@ -1,3 +1,8 @@
+### Fixed
+- [#60](https://github.com/reportportal/agent-js-postman/issues/60) Template strings eg. backticks are not supported
+### Changed
+- `token` configuration option was renamed to `apiKey` to maintain common convention.
+- `@reportportal/client-javascript` bumped to version `5.0.13`.
 
 ## [5.0.4] - 2023-06-05
 ### Fixed
