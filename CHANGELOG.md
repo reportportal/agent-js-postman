@@ -1,3 +1,5 @@
+
+## [5.0.5] - 2023-08-28
 ### Fixed
 - [#60](https://github.com/reportportal/agent-js-postman/issues/60) Template strings eg. backticks are not supported
 ### Changed
