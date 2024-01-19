@@ -1,6 +1,6 @@
 {
   "name": "@reportportal/newman-reporter-agent-js-postman",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "description": "ReportPortal reporter for newman",
   "main": "./lib/index.js",
   "author": "ReportPortal.io",
