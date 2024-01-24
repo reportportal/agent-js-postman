@@ -1,3 +1,6 @@
+### Changed
+- **Breaking change** Drop support of Node.js 10. The version [5.0.7](https://github.com/reportportal/agent-js-postman/releases/tag/v5.0.7) is the latest that supports it.
+- `@reportportal/client-javascript` bumped to version `5.1.1`.
 
 ## [5.0.7] - 2024-01-19
 ### Deprecated
