@@ -8,8 +8,8 @@ Agent to integrate Postman (based on Newman collection runner) with ReportPortal
 ### How to use
 The installation should be global if newman is installed globally, otherwise - local (replace -g from the command below with -S for a local installation).
 
-```bash
-$ npm install -g @reportportal/newman-reporter-agent-js-postman
+```cmd
+npm install --save-dev @reportportal/newman-reporter-agent-js-postman
 ```
 
 ### Usage
@@ -20,17 +20,17 @@ There are two ways to enable this reporter - with command line or programmatical
 
 To enable this reporter you have to specify `agent-js-postman` in Newman's `-r` or `--reporters` option.
 
-```bash
-$ newman run https://postman-echo.com/status/200 \
-    -r @reportportal/agent-js-postman \
-    --reporter-@reportportal/agent-js-postman-debug=true \
-    --reporter-@reportportal/agent-js-postman-endpoint=https://your-instance.com:8080/api/v1 \
-    --reporter-@reportportal/agent-js-postman-api-key=reportportalApiKey \
-    --reporter-@reportportal/agent-js-postman-launch=LAUNCH_NAME \
-    --reporter-@reportportal/agent-js-postman-project=PROJECT_NAME \
-    --reporter-@reportportal/agent-js-postman-description=LAUNCH_DESCRIPTION \
-    --reporter-@reportportal/agent-js-postman-attributes=launchKey:launchValue;launchValueTwo \
-    -x
+```cmd
+newman run https://postman-echo.com/status/200 \
+  -r @reportportal/agent-js-postman \
+  --reporter-@reportportal/agent-js-postman-debug=true \
+  --reporter-@reportportal/agent-js-postman-endpoint=https://your-instance.com:8080/api/v1 \
+  --reporter-@reportportal/agent-js-postman-api-key=reportportalApiKey \
+  --reporter-@reportportal/agent-js-postman-launch=LAUNCH_NAME \
+  --reporter-@reportportal/agent-js-postman-project=PROJECT_NAME \
+  --reporter-@reportportal/agent-js-postman-description=LAUNCH_DESCRIPTION \
+  --reporter-@reportportal/agent-js-postman-attributes=launchKey:launchValue;launchValueTwo \
+  -x
 ```
 
 Pay attention that you **must** add **-x** or **--suppress-exit-code** parameter while running newman using CLI.
@@ -46,11 +46,11 @@ newman.run(
         reporters: "@reportportal/agent-js-postman",
         reporter: {
             "@reportportal/agent-js-postman": {
-                apiKey: "reportportalApiKey",
-                endpoint: "https://your-instance.com:8080/api/v1",
-                launch: "LAUNCH_NAME",
-                project: "PROJECT_NAME",
-                description: "LAUNCH_DESCRIPTION",
+                apiKey: "<API_KEY>",
+                endpoint: "https://your.reportportal.server/api/v1",
+                project: "Your reportportal project name",
+                launch: "Your launch name",
+                description: "Your launch description",
                 attributes: [
                     {
                         "key": "launchKey",
@@ -60,7 +60,7 @@ newman.run(
                         "value": "launchValue"
                     },
                 ],
-                mode: 'DEFAULT',
+                mode: "DEFAULT",
                 debug: false
             }
         }
@@ -74,8 +74,8 @@ newman.run(
 );
 
 // To run several collections
-// Note, this will create multiple launches that you can merge into one manually via the UI
-fs.readdir('./collections_folder_path', (err, files) => {
+// Note, this will create multiple launches, so you can merge into one manually via the UI or API
+fs.readdir("./collections_folder_path", (err, files) => {
     if (err) {
         throw err;
     }
@@ -89,23 +89,25 @@ fs.readdir('./collections_folder_path', (err, files) => {
 
 The full list of available options presented below.
 
-| Option           | Necessity  | Default   | Description                                                                                                                                                                                                                                                                                                                                                                            |
-|------------------|------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| apiKey           | Required   |           | User's reportportal token from which you want to send requests. It can be found on the profile page of this user.                                                                                                                                                                                                                                                                      |
-| endpoint         | Required   |           | URL of your server. For example 'https://server:8080/api/v1'.                                                                                                                                                                                                                                                                                                                          |
-| launch           | Required   |           | Name of launch at creation.                                                                                                                                                                                                                                                                                                                                                            |
-| project          | Required   |           | The name of the project in which the launches will be created.                                                                                                                                                                                                                                                                                                                         |
-| attributes       | Optional   | []        | Launch attributes. Programmatically - [{ "key": "YourKey", "value": "YourValue" }] <br/> with CLI - "YourKey:YourValue;YourValueTwo"                                                                                                                                                                                                                                                                                                                                                                    |
-| description      | Optional   | ''        | Launch description.                                                                                                                                                                                                                                                                                                                                                                    |
-| rerun            | Optional   | false     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                                                                                                                                                                                                                                                |
-| rerunOf          | Optional   | Not set   | UUID of launch you want to rerun. If not specified, reportportal will update the latest launch with the same name                                                                                                                                                                                                                                                                      |
-| mode             | Optional   | 'DEFAULT' | Results will be submitted to Launches page <br/> *'DEBUG'* - Results will be submitted to Debug page.                                                                                                                                                                                                                                                                                   |
-| skippedIssue     | Optional   | true      | reportportal provides feature to mark skipped tests as not 'To Investigate'. <br/> Option could be equal boolean values: <br/> *true* - skipped tests considered as issues and will be marked as 'To Investigate' on reportportal. <br/> *false* - skipped tests will not be marked as 'To Investigate' on application.                                                                |
-| debug            | Optional   | false     | This flag allows seeing the logs of the client-javascript. Useful for debugging.                                                                                                                                                                                                                                                                                                       |
-| launchId         | Optional   | Not set   | The _ID_ of an already existing launch. The launch must be in 'IN_PROGRESS' status while the tests are running. Please note that if this _ID_ is provided, the launch will not be finished at the end of the run and must be finished separately.                                                                                                                                       |
-| logLaunchLink    | Optional   | false     | This flag allows print the URL of the Launch of the tests in console.                                                                                                                                                                                                                                                                                                                  |
-| restClientConfig | Optional   | Not set   | The object with `agent` property for configure [http(s)](https://nodejs.org/api/https.html#https_https_request_url_options_callback) client, may contain other client options eg. [`timeout`](https://github.com/reportportal/client-javascript#timeout-30000ms-on-axios-requests). <br/> Visit [client-javascript](https://github.com/reportportal/client-javascript) for more details. |
-| token            | Deprecated | Not set   | Use `apiKey` instead.                                                                                                                                                                                                                                                                                                                                                                  |
+| Option                | Necessity  | Default   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|-----------------------|------------|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| apiKey                | Required   |           | User's reportportal token from which you want to send requests. It can be found on the profile page of this user.                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| endpoint              | Required   |           | URL of your server. For example 'https://server:8080/api/v1'.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| launch                | Required   |           | Name of launch at creation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| project               | Required   |           | The name of the project in which the launches will be created.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| attributes            | Optional   | []        | Launch attributes. Programmatically - [{ "key": "YourKey", "value": "YourValue" }] <br/> with CLI - "YourKey:YourValue;YourValueTwo"                                                                                                                                                                                                                                                                                                                                                                                                             |
+| description           | Optional   | ''        | Launch description.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| rerun                 | Optional   | false     | Enable [rerun](https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/rerun.md)                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| rerunOf               | Optional   | Not set   | UUID of launch you want to rerun. If not specified, reportportal will update the latest launch with the same name                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| mode                  | Optional   | 'DEFAULT' | Results will be submitted to Launches page <br/> *'DEBUG'* - Results will be submitted to Debug page.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| skippedIssue          | Optional   | true      | reportportal provides feature to mark skipped tests as not 'To Investigate'. <br/> Option could be equal boolean values: <br/> *true* - skipped tests considered as issues and will be marked as 'To Investigate' on reportportal. <br/> *false* - skipped tests will not be marked as 'To Investigate' on application.                                                                                                                                                                                                                          |
+| debug                 | Optional   | false     | This flag allows seeing the logs of the client-javascript. Useful for debugging.                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| launchId              | Optional   | Not set   | The _ID_ of an already existing launch. The launch must be in 'IN_PROGRESS' status while the tests are running. Please note that if this _ID_ is provided, the launch will not be finished at the end of the run and must be finished separately.                                                                                                                                                                                                                                                                                                |
+| restClientConfig      | Optional   | Not set   | `axios` like http client [config](https://github.com/axios/axios#request-config). May contain `agent` property for configure [http(s)](https://nodejs.org/api/https.html#https_https_request_url_options_callback) client, and other client options e.g. `proxy`, [`timeout`](https://github.com/reportportal/client-javascript#timeout-30000ms-on-axios-requests). For debugging and displaying logs the `debug: true` option can be used. <br/> Visit [client-javascript](https://github.com/reportportal/client-javascript) for more details. |
+| headers               | Optional   | {}        | The object with custom headers for internal http client.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| launchUuidPrint       | Optional   | false     | Whether to print the current launch UUID.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| launchUuidPrintOutput | Optional   | 'STDOUT'  | Launch UUID printing output. Possible values: 'STDOUT', 'STDERR', 'FILE', 'ENVIRONMENT'. Works only if `launchUuidPrint` set to `true`. File format: `rp-launch-uuid-${launch_uuid}.tmp`. Env variable: `RP_LAUNCH_UUID`, note that the env variable is only available in the reporter process (it cannot be obtained from tests).                                                                                                                                                                                                               |
+| token                 | Deprecated | Not set   | Use `apiKey` instead.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 ### Report static attributes
 * To report attributes for suite you should use collection variables.

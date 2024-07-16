@@ -6,9 +6,10 @@
   "author": "ReportPortal.io",
   "license": "Apache-2.0",
   "scripts": {
+    "lint": "eslint .",
+    "format": "npm run lint -- --fix",
     "test": "jest --detectOpenHandles --config ./jest.config.js",
-    "test:coverage": "jest --coverage",
-    "lint": "eslint ./lib --quiet --fix"
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@reportportal/client-javascript": "^5.1.3",
