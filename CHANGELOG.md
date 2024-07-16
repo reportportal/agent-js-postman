@@ -2,6 +2,8 @@
 - Logging link to the launch on its finish now available by default.
 ### Changed
 - `@reportportal/client-javascript` bumped to version `5.1.4`. `launchUuidPrint` and `launchUuidPrintOutput` configuration options introduced.
+### Security
+- Updated versions of vulnerable packages (braces).
 ### Deprecated
 - Node.js 12 usage. This minor version is the latest that supports Node.js 12.
 
