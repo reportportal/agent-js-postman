@@ -1,3 +1,5 @@
+
+## [5.1.1] - 2024-07-16
 ### Added
 - Logging link to the launch on its finish now available by default.
 ### Changed
