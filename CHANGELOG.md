@@ -1,3 +1,12 @@
+### Added
+- OAuth 2.0 Password Grant authentication, check [Authentication Options](https://github.com/reportportal/agent-js-cypress?tab=readme-ov-file#authentication-options) for more details.
+- Allow configuring the HTTP retry strategy via `restClientConfig.retry` and tune the [default policy](https://github.com/reportportal/client-javascript?tab=readme-ov-file#retry-configuration).
+- New `launchUuidPrintOutput` types introduced: 'FILE', 'ENVIRONMENT'.
+### Changed
+- **Breaking change** Drop support of Node.js 12. The version [5.1.1](https://github.com/reportportal/agent-js-postman/releases/tag/v5.1.1) is the latest that supports it.
+- `@reportportal/client-javascript` bumped to version `5.4.3`.
+### Security
+- Updated versions of vulnerable packages (axios, brace-expansion, form-data).
 
 ## [5.1.1] - 2024-07-16
 ### Added
