@@ -223,6 +223,7 @@ For both tests or steps, this is true
 You can use the following methods to report logs with different log levels:
 
 * console.log("launch/suite/test", "message");
+* console.log("launch/suite/test", "message", "level");
 * console.error("launch/suite/test", "message");
 * console.debug("launch/suite/test", "message");
 * console.warn("launch/suite/test", "message");
@@ -232,6 +233,7 @@ You can use the following methods to report logs with different log levels:
 |-----------|----------|--------------------------------------------------------------------------------------------------------|----------------|
 | namespace | true     | "string" - namespace, must be equal to the *launch, suite or test* depends on where you want to report | "test"         |
 | message   | true     | "string" - message                                                                                     | "your message" |
+| level     | false    | "string" - log level. Can be either predefined (trace, debug, info, warn, error, fatal) or any custom string | "info"         |
 
 * Step doesn't support logs reporting
 

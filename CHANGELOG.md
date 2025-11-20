@@ -1,3 +1,5 @@
+### Added
+- Custom log level support via third parameter in `console.log()` - supports predefined or custom string levels. See [Logging](https://github.com/reportportal/agent-js-postman#logging).
 
 ## [5.2.0] - 2025-10-21
 ### Added
