@@ -1,5 +1,10 @@
 ### Added
 - Custom log level support via third parameter in `console.log()` - supports predefined or custom string levels. See [Logging](https://github.com/reportportal/agent-js-postman#logging).
+### Fixed
+- [#66](https://github.com/reportportal/agent-js-postman/issues/66) Postman pm.test.skip is 'passed' not 'skipped' in ReportPortal.
+- [#114](https://github.com/reportportal/agent-js-postman/issues/114) RP shows tests as Passed even when several assertions failed.
+### Changed
+- `@reportportal/client-javascript` bumped to version `5.5.8`.
 
 ## [5.2.0] - 2025-10-21
 ### Added
