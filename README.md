@@ -30,6 +30,7 @@ newman run https://postman-echo.com/status/200 \
   --reporter-@reportportal/agent-js-postman-project=PROJECT_NAME \
   --reporter-@reportportal/agent-js-postman-description=LAUNCH_DESCRIPTION \
   --reporter-@reportportal/agent-js-postman-attributes=launchKey:launchValue;launchValueTwo \
+  --reporter-@reportportal/agent-js-postman-skipped-issue=false \
   -x
 ```
 
@@ -61,7 +62,8 @@ newman.run(
                     },
                 ],
                 mode: "DEFAULT",
-                debug: false
+                debug: false,
+                skippedIssue: false
             }
         }
     },
