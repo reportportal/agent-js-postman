@@ -260,6 +260,7 @@ describe('utils', () => {
       description: 'description',
       attributes: 'attributes',
       debug: true,
+      skippedIsNotIssue: false,
     };
 
     test('should return client init object', () => {
