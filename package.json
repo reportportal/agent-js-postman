@@ -12,7 +12,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@reportportal/client-javascript": "^5.5.8",
+    "@reportportal/client-javascript": "~5.5.10",
     "lodash": "^4.17.21",
     "string_decoder": "^1.3.0"
   },
