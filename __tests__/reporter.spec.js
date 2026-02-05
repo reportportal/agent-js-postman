@@ -80,7 +80,7 @@ describe('reporter', () => {
       });
 
       expect(reporter.launchLogs).toEqual([
-        { level: 'log', message: 'launch message', time: 1234567891233 },
+        { level: 'INFO', message: 'launch message', time: 1234567891233 },
       ]);
     });
 
@@ -101,7 +101,7 @@ describe('reporter', () => {
       });
 
       expect(reporter.suiteLogs).toEqual([
-        { level: 'log', message: 'suite message', time: 1234567891233 },
+        { level: 'INFO', message: 'suite message', time: 1234567891233 },
       ]);
     });
 
@@ -122,7 +122,7 @@ describe('reporter', () => {
       });
 
       expect(reporter.testLogs).toEqual([
-        { level: 'log', message: 'test message', time: 1234567891233 },
+        { level: 'INFO', message: 'test message', time: 1234567891233 },
       ]);
     });
   });
