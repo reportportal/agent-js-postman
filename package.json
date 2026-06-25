@@ -6,6 +6,7 @@
   "author": "ReportPortal.io",
   "license": "Apache-2.0",
   "scripts": {
+    "codegraph": "bash scripts/codegraph.sh",
     "lint": "eslint .",
     "format": "npm run lint -- --fix",
     "test": "jest --detectOpenHandles --config ./jest.config.js",
