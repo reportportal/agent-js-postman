@@ -1,3 +1,6 @@
+### Changed
+- **Breaking change** Drop support of Node.js 14. The version [5.2.1](https://github.com/reportportal/agent-js-postman/releases/tag/v5.2.1) is the latest that supports it. The minimum supported Node.js version is now 16.0.0.
+- `@reportportal/client-javascript` bumped to version `5.6.0`.
 
 ## [5.2.1] - 2026-02-05
 ### Added
