@@ -307,6 +307,63 @@ describe('reporter', () => {
       expect(reporter.collectionMap.get('ref').steps).toEqual(expectedSteps);
     });
 
+    test('should extract every pm.test when the whole script is stored in one exec element', () => {
+      const expectedSteps = [
+        {
+          stepName: 'Test, status code is 400',
+          testCaseId: 'testCaseIdForTestOneStepTwo',
+          status: 'failed',
+        },
+        {
+          stepName: 'Test, status code is 200',
+          testCaseId: 'testCaseIdForTestOneStepOne',
+          status: 'passed',
+        },
+      ];
+      const script = [
+        'pm.test("Test, status code is 200", function () {',
+        '    pm.variables.set("rp.testCaseId", "testCaseIdForTestOneStepOne");',
+        '    pm.variables.set("rp.status","passed")',
+        '    pm.response.to.have.status(300);',
+        '});',
+        'pm.test("Test, status code is 400", function () {',
+        '    pm.variables.set("rp.testCaseId", "testCaseIdForTestOneStepTwo");',
+        '    pm.variables.set("rp.status","failed")',
+        '    pm.response.to.have.status(300);',
+        '});',
+      ].join('\n');
+
+      reporter.collectionMap = new Map([
+        [
+          'ref',
+          {
+            testId: 'startTestItem',
+            steps: [],
+          },
+        ],
+      ]);
+      reporter.collectionRunOptions = {
+        iterationData: ['parameters'],
+        environment: {},
+      };
+
+      reporter.onBeforeTest(null, {
+        events: [
+          {
+            listen: 'test',
+            script: {
+              type: 'text/javascript',
+              exec: [script],
+            },
+          },
+        ],
+        cursor: { ref: 'ref', iteration: 0 },
+        item: { name: 'test' },
+      });
+
+      expect(reporter.collectionMap.get('ref').steps).toEqual(expectedSteps);
+    });
+
     test('should not extract stepName,testCaseId,status from the test script in case of error', () => {
       expect(() => reporter.onBeforeTest('error')).toThrowError('error');
 
