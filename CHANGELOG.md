@@ -1,3 +1,7 @@
+### Fixed
+- Subsequent test reporting for a single line exec script.
+### Changed
+- `lodash` bumped to version `4.18.1`, addresses [#142](https://github.com/reportportal/agent-js-postman/issues/142).
 
 ## [5.3.0] - 2026-09-15
 ### Changed
