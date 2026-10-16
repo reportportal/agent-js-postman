@@ -86,6 +86,34 @@ describe('utils', () => {
     });
   });
 
+  describe('getScriptExecLines', () => {
+    test('should keep a line array as separate lines', () => {
+      const lines = utils.getScriptExecLines(['pm.test("one", function () {', '});']);
+
+      expect(lines).toEqual(['pm.test("one", function () {', '});']);
+    });
+
+    test('should split one exec element that contains the whole script', () => {
+      const lines = utils.getScriptExecLines([
+        'pm.test("one", function () {\n    pm.response.to.have.status(400);\n});\npm.test("two", function () {\n});',
+      ]);
+
+      expect(lines).toEqual([
+        'pm.test("one", function () {',
+        '    pm.response.to.have.status(400);',
+        '});',
+        'pm.test("two", function () {',
+        '});',
+      ]);
+    });
+
+    test('should split a string exec and CRLF line endings', () => {
+      const lines = utils.getScriptExecLines('pm.test("one", function () {\r\n});');
+
+      expect(lines).toEqual(['pm.test("one", function () {', '});']);
+    });
+  });
+
   describe('getArrAttributesFromString', () => {
     test('should return correct array of attributes', () => {
       const parameter = 'keyOne:valueOne';
