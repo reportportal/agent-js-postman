@@ -1,3 +1,5 @@
+
+## [5.3.1] - 2026-10-16
 ### Fixed
 - Subsequent test reporting for a single line exec script.
 ### Changed
